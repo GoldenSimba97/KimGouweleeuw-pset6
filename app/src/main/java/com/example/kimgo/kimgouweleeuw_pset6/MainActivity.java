@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     String email;
-    String password; // needs to be at least 6 characters
+    String password;
     EditText emailText;
     EditText passwordText;
 
@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        findViewById(R.id.logInButton).setOnClickListener(new logInUser());
+        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -50,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
-        findViewById(R.id.logInButton).setOnClickListener(new logInUser());
-        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
     }
 
 
@@ -71,28 +71,6 @@ public class MainActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
-
-//    public void createUser() {
-//        mAuth.createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        Log.d("Create user", "createUserWithEmail:onComplete:" + task.isSuccessful());
-//
-//                        // If sign in fails, display a message to the user. If sign in succeeds
-//                        // the auth state listener will be notified and logic to handle the
-//                        // signed in user can be handled in the listener.
-//                        if (!task.isSuccessful()) {
-//                            Toast.makeText(MainActivity.this, "Authentication Failed",
-//                                    Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(MainActivity.this, "Created user: " + email + "successfully",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//    }
 
 
     public void logIn() {
@@ -122,10 +100,12 @@ public class MainActivity extends AppCompatActivity {
         @Override public void onClick(View view) {
             email = emailText.getText().toString();
             password = passwordText.getText().toString();
-            logIn();
-            Intent intent = new Intent(view.getContext(), SecondActivity.class);
-            startActivity(intent);
-            finish();
+            if (!email.isEmpty() & !password.isEmpty()) {
+                logIn();
+                Intent intent = new Intent(view.getContext(), SecondActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 

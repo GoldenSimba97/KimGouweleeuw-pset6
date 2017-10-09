@@ -20,10 +20,11 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     String email;
-    String password; // needs to be at least 6 characters
+    String password; 
+    String confirmPassword;
     EditText emailText;
     EditText passwordText;
-    EditText passwordText2;
+    EditText passwordConfirm;
 
 
     @Override
@@ -33,13 +34,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         emailText = (EditText) findViewById(R.id.editEmail);
         passwordText = (EditText) findViewById(R.id.editPassword);
-        passwordText2 = (EditText) findViewById(R.id.editPassword2);
+        passwordConfirm = (EditText) findViewById(R.id.editPassword2);
 
         emailText.setHint("Email");
         passwordText.setHint("Password");
-        passwordText2.setHint("Repeat password");
+        passwordConfirm.setHint("Confirm password");
 
         mAuth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -54,8 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         };
-
-        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
     }
 
 
@@ -102,13 +103,21 @@ public class RegisterActivity extends AppCompatActivity {
         @Override public void onClick(View view) {
             email = emailText.getText().toString();
             password = passwordText.getText().toString();
-            createUser();
-            Intent intent = new Intent(view.getContext(), SecondActivity.class);
-            startActivity(intent);
-            finish();
-
-//            TextView showEmail = (TextView) findViewById(R.id.showEmail);
-//            showEmail.setText(email);
+            confirmPassword = passwordConfirm.getText().toString();
+            if (!email.isEmpty() & !password.isEmpty() & !confirmPassword.isEmpty()) {
+                if (password.length() >= 6 & password.equals(confirmPassword)) {
+                    createUser();
+                    Intent intent = new Intent(view.getContext(), SecondActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else if (!password.equals(confirmPassword)) {
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Password needs to be at least 6 characters long",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }
