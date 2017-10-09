@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "107558129737",
+    "firebase_url": "https://kimgouweleeuw-pset6.firebaseio.com",
+    "project_id": "kimgouweleeuw-pset6",
+    "storage_bucket": "kimgouweleeuw-pset6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107558129737:android:caa652e1d6450108",
+        "android_client_info": {
+          "package_name": "com.example.kimgo.kimgouweleeuw_pset6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "107558129737-us5s4qsrl00ultpuba8g1jcq29eg7umb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kimgo.kimgouweleeuw_pset6",
+            "certificate_hash": "7efb774a71534d9b380e2f47fb05212199a4cb41"
+          }
+        },
+        {
+          "client_id": "107558129737-o9c3alirc4g057iu9qoeek58s4ch3v0j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL8j7BEzNpAshYQQS-hgcPKBEytwm-c2w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "107558129737-o9c3alirc4g057iu9qoeek58s4ch3v0j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

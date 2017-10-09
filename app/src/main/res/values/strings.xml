@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">KimGouweleeuw-pset6</string>
+    <string name="login">Log in</string>
+    <string name="register">Register</string>
+    <string name="noAccount">If you don\'t have an account yet, please register to continue</string>
+    <string name="welcome">Welcome</string>
+</resources>
