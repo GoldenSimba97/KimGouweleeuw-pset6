@@ -6,4 +6,5 @@
     <string name="welcome">Welcome</string>
     <string name="search">Search</string>
     <string name="results">Search results</string>
+    <string name="noresults">No search results found</string>
 </resources>

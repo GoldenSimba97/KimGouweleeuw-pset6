@@ -54,7 +54,7 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        this.secondAct.bookStartIntent(list);
+        this.secondAct.bookShow(list);
     }
 
 }

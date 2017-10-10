@@ -1,12 +1,16 @@
 package com.example.kimgo.kimgouweleeuw_pset6;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -98,15 +102,37 @@ public class SecondActivity extends AppCompatActivity {
                 asyncTask.execute(bookSearch);
 
                 searchBooks.getText().clear();
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }
     }
 
-    public void bookStartIntent(ArrayList<String> booksData) {
-        Intent dataIntent = new Intent(this, ResultsActivity.class);
-        dataIntent.putExtra("data", booksData);
-        this.startActivity(dataIntent);
+
+    public void bookShow(ArrayList<String> booksArray) {
+        TextView results = (TextView)findViewById(R.id.searchResults);
+        if (!booksArray.isEmpty()) {
+            results.setText(R.string.results);
+        } else {
+            results.setText(R.string.noresults);
+        }
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>
+                (this, android.R.layout.simple_list_item_1, booksArray);
+        ListView lvItems = (ListView) findViewById(R.id.listViewID);
+        assert lvItems != null;
+        lvItems.setAdapter(arrayAdapter);
     }
+
+
+//    public void bookStartIntent(ArrayList<String> booksData) {
+//        Intent dataIntent = new Intent(this, ResultsActivity.class);
+//        dataIntent.putExtra("data", booksData);
+//        this.startActivity(dataIntent);
+//    }
 
 
 //    public void addToDatabase(View view) {

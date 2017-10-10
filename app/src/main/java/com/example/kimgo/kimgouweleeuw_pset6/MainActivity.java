@@ -1,13 +1,21 @@
 package com.example.kimgo.kimgouweleeuw_pset6;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.logInButton).setOnClickListener(new logInUser());
-        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
+//        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
+        goToRegisterUser();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -88,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Authentication Failed",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this, "Loged in user: " + email + "successfully",
+                            Toast.makeText(MainActivity.this, "Loged in user: " + email + " successfully",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -116,6 +125,25 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    public void goToRegisterUser() {
+        TextView register = (TextView) findViewById(R.id.registerText);
+        String registerHere = "Don't have an account yet? Register here to continue!";
+
+        register.setMovementMethod(LinkMovementMethod.getInstance());
+        register.setText(registerHere, TextView.BufferType.SPANNABLE);
+
+        Spannable mySpannable = (Spannable)register.getText();
+        ClickableSpan myClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        };
+        mySpannable.setSpan(myClickableSpan, 36, 40, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
 

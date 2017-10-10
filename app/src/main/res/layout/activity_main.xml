@@ -42,22 +42,24 @@
         android:layout_height="wrap_content"
         android:text="@string/login" />
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+    <!--<View-->
+        <!--android:layout_width="1dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"/>-->
 
     <TextView
         android:id="@+id/registerText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/noAccount"
+        android:text=""
+        android:clickable="true"
+        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/register" />
+    <!--<Button-->
+        <!--android:id="@+id/registerButton"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/register" />-->
 
 </LinearLayout>
