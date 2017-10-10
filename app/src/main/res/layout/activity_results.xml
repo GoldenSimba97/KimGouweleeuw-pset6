@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.kimgo.kimgouweleeuw_pset6.ResultsActivity">
+
+    <TextView
+        android:id="@+id/tvFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/results"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+    <ListView
+        android:id="@+id/listViewID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

@@ -20,7 +20,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     String email;
-    String password; 
+    String password;
     String confirmPassword;
     EditText emailText;
     EditText passwordText;

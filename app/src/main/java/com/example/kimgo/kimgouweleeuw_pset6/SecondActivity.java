@@ -17,19 +17,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class SecondActivity extends AppCompatActivity {
     private FirebaseAuth authTest;
     private FirebaseAuth.AuthStateListener authListenerTest;
     private static final String TAG = "Firebase_test";
+    SecondActivity secondAct;
+    EditText searchBooks;
 //    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+        secondAct = this;
 
         authTest = FirebaseAuth.getInstance();
         setListener();
+
+        searchBooks = (EditText) findViewById(R.id.searchBooks);
+        searchBooks.setHint("Search for books");
+
+        findViewById(R.id.searchButton).setOnClickListener(new bookSearch());
 
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -78,6 +88,24 @@ public class SecondActivity extends AppCompatActivity {
         if (authListenerTest != null) {
             authTest.removeAuthStateListener(authListenerTest);
         }
+    }
+
+    private class bookSearch implements View.OnClickListener {
+        @Override public void onClick(View view) {
+            String bookSearch = searchBooks.getText().toString();
+            if (!bookSearch.isEmpty()) {
+                BookAsyncTask asyncTask = new BookAsyncTask(secondAct);
+                asyncTask.execute(bookSearch);
+
+                searchBooks.getText().clear();
+            }
+        }
+    }
+
+    public void bookStartIntent(ArrayList<String> booksData) {
+        Intent dataIntent = new Intent(this, ResultsActivity.class);
+        dataIntent.putExtra("data", booksData);
+        this.startActivity(dataIntent);
     }
 
 
