@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -29,6 +30,8 @@ public class SecondActivity extends AppCompatActivity {
     private static final String TAG = "Firebase_test";
     SecondActivity secondAct;
     EditText searchBooks;
+    ListView lvItems;
+    ArrayList<String> idList;
 //    private DatabaseReference mDatabase;
 
     @Override
@@ -113,7 +116,8 @@ public class SecondActivity extends AppCompatActivity {
     }
 
 
-    public void bookShow(ArrayList<String> booksArray) {
+    public void bookShow(ArrayList<String> booksArray, ArrayList<String> idArray) {
+        idList = idArray;
         TextView results = (TextView)findViewById(R.id.searchResults);
         if (!booksArray.isEmpty()) {
             results.setText(R.string.results);
@@ -122,9 +126,23 @@ public class SecondActivity extends AppCompatActivity {
         }
         ArrayAdapter arrayAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, booksArray);
-        ListView lvItems = (ListView) findViewById(R.id.listViewID);
+        lvItems = (ListView) findViewById(R.id.listViewID);
         assert lvItems != null;
         lvItems.setAdapter(arrayAdapter);
+        lvItems.setOnItemClickListener(new goToBookInfo());
+    }
+
+    private class goToBookInfo implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view,
+                                int position, long id) {
+//            String book = ((TextView) view).getText().toString();
+            String bookID = idList.get(position);
+            Log.d("book", bookID);
+            Intent intent = new Intent(getApplicationContext(), BookInfoActivity.class);
+            intent.putExtra("book", bookID);
+            startActivity(intent);
+        }
     }
 
 

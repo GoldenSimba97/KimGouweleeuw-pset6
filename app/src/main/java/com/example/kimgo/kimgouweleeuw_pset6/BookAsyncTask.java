@@ -2,6 +2,7 @@ package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -17,10 +18,19 @@ import java.util.ArrayList;
 public class BookAsyncTask extends AsyncTask<String, Integer, String> {
     private Context context;
     private SecondActivity secondAct;
+    private BookInfoActivity bookAct;
+    private int type;
 
     BookAsyncTask(SecondActivity second) {
         this.secondAct = second;
         this.context = this.secondAct.getApplicationContext();
+        this.type = 1;
+    }
+
+    BookAsyncTask(BookInfoActivity book) {
+        this.bookAct = book;
+        this.context = this.bookAct.getApplicationContext();
+        this.type = 2;
     }
 
     @Override
@@ -30,31 +40,56 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        return HttpRequestHelper.downloadFromServer(params);
+        return HttpRequestHelper.downloadFromServer(type, params);
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> idList = new ArrayList<>();
+        String title = "";
+        String author = "";
+//        Integer types;
+//        types = type;
+//        Log.d("title", types.toString());
 
         try {
-            JSONObject trackStreamObj = new JSONObject(result);
-            JSONArray resultObj = trackStreamObj.getJSONArray("items");
-//            JSONObject trackMatchesObj = resultObj.getJSONObject("trackmatches");
-//            JSONArray trackObj = trackMatchesObj.getJSONArray("track");
-            for (int i = 0; i < resultObj.length(); ++i) {
-                JSONObject book = resultObj.getJSONObject(i);
-                JSONObject volumeObj = book.getJSONObject("volumeInfo");
-                String title = volumeObj.getString("title");
+            JSONObject bookStreamObj = new JSONObject(result);
+            if (type == 1) {
+                JSONArray resultObj = bookStreamObj.getJSONArray("items");
+                for (int i = 0; i < resultObj.length(); ++i) {
+                    JSONObject book = resultObj.getJSONObject(i);
+                    String id = book.getString("id");
+                    JSONObject volumeObj = book.getJSONObject("volumeInfo");
+                    title = volumeObj.getString("title");
+                    JSONArray authorObj = volumeObj.getJSONArray("authors");
+                    author = authorObj.getString(0);
+                    list.add(title + " - " + author);
+                    idList.add(id);
+                }
+            } else {
+                JSONObject volumeObj = bookStreamObj.getJSONObject("volumeInfo");
+                title = volumeObj.getString("title");
                 JSONArray authorObj = volumeObj.getJSONArray("authors");
-                String author = authorObj.getString(0);
-                list.add(title + " - " + author);
+                author = authorObj.getString(0);
+                String publisher = volumeObj.getString("publisher");
+                String publishedDate = volumeObj.getString("publishedDate");
+                String description = volumeObj.getString("description");
+                list.add("Title: " + title);
+                list.add("Author: " + author);
+                list.add("Publisher: " + publisher);
+                list.add("Publication data: " + publishedDate);
+                list.add("Book description: " + description);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        this.secondAct.bookShow(list);
+        if (type == 1) {
+            this.secondAct.bookShow(list, idList);
+        } else {
+            this.bookAct.bookInfoShow(list);
+        }
     }
 
 }
