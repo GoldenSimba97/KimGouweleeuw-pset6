@@ -31,11 +31,13 @@ public class MainActivity extends AppCompatActivity {
     String password;
     EditText emailText;
     EditText passwordText;
+    MainActivity mainAct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainAct = this;
 
         emailText = (EditText) findViewById(R.id.editEmail);
         passwordText = (EditText) findViewById(R.id.editPassword);
@@ -45,10 +47,15 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.logInButton).setOnClickListener(new logInUser());
-//        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
-        goToRegisterUser();
+        firebaseListener();
 
+        findViewById(R.id.logInButton).setOnClickListener(new logInUser());
+
+        goToRegisterUser();
+    }
+
+
+    public void firebaseListener() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -94,11 +101,14 @@ public class MainActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w("Email", "signInWithEmail:failed", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication Failed",
+                            Toast.makeText(MainActivity.this, "Authentication Failed. Email and/or password are incorrect",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            Log.d("log", "logged in");
                             Toast.makeText(MainActivity.this, "Loged in user: " + email + " successfully",
                                     Toast.LENGTH_SHORT).show();
+                            firebaseListener();
+                            goToSecondActivity();
                         }
                     }
                 });
@@ -111,21 +121,22 @@ public class MainActivity extends AppCompatActivity {
             password = passwordText.getText().toString();
             if (!email.isEmpty() & !password.isEmpty()) {
                 logIn();
-                Intent intent = new Intent(view.getContext(), SecondActivity.class);
-                startActivity(intent);
-                finish();
             }
         }
     }
 
-
-    private class registerUser implements View.OnClickListener {
-        @Override public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), RegisterActivity.class);
-            startActivity(intent);
-            finish();
-        }
+    private void goToSecondActivity() {
+        startActivity(new Intent(mainAct, SecondActivity.class));
     }
+
+
+//    private class registerUser implements View.OnClickListener {
+//        @Override public void onClick(View view) {
+//            Intent intent = new Intent(view.getContext(), RegisterActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
 
     public void goToRegisterUser() {
         TextView register = (TextView) findViewById(R.id.registerText);

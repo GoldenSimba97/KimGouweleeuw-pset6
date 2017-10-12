@@ -2,6 +2,7 @@ package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,13 +41,15 @@ public class SecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second);
         secondAct = this;
 
-        authTest = FirebaseAuth.getInstance();
         setListener();
+
+        authTest = FirebaseAuth.getInstance();
 
         searchBooks = (EditText) findViewById(R.id.searchBooks);
         searchBooks.setHint("Search for books");
 
         findViewById(R.id.searchButton).setOnClickListener(new bookSearch());
+        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
 
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -64,10 +67,13 @@ public class SecondActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     TextView showUser = (TextView) findViewById(R.id.showUser);
-                    showUser.setText(user.getEmail());
+                    Resources res = getResources();
+                    String currentUser = res.getString(R.string.hello, user.getEmail());
+                    showUser.setText(currentUser);
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out:");
+                    Log.d("logout", "logged out");
                     goToRegisterLoginActivity();
                 }
             }
@@ -77,7 +83,7 @@ public class SecondActivity extends AppCompatActivity {
 
     /* Sends the user back to the starting activity to log in or register. */
     private void goToRegisterLoginActivity() {
-        startActivity(new Intent(SecondActivity.this, MainActivity.class));
+        startActivity(new Intent(secondAct, MainActivity.class));
     }
 
 
@@ -136,7 +142,6 @@ public class SecondActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view,
                                 int position, long id) {
-//            String book = ((TextView) view).getText().toString();
             String bookID = idList.get(position);
             Log.d("book", bookID);
             Intent intent = new Intent(getApplicationContext(), BookInfoActivity.class);
@@ -146,11 +151,14 @@ public class SecondActivity extends AppCompatActivity {
     }
 
 
-//    public void bookStartIntent(ArrayList<String> booksData) {
-//        Intent dataIntent = new Intent(this, ResultsActivity.class);
-//        dataIntent.putExtra("data", booksData);
-//        this.startActivity(dataIntent);
-//    }
+    private class logOut implements View.OnClickListener {
+        @Override public void onClick(View view) {
+            authTest.signOut();
+            setListener();
+            Intent logOutIntent = new Intent(secondAct, MainActivity.class);
+            startActivity(logOutIntent);
+        }
+    }
 
 
 //    public void addToDatabase(View view) {

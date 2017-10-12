@@ -3,8 +3,10 @@
     <string name="login">Log in</string>
     <string name="register">Register</string>
     <string name="noAccount">Don\'t have an account yet? Please register to continue!</string>
-    <string name="welcome">Welcome</string>
+    <string name="welcome">Welcome to GreatReads</string>
+    <string name="subwelcome">Please log in to continue</string>
     <string name="search">Search</string>
     <string name="results">Search results</string>
     <string name="noresults">No search results found</string>
+    <string name="hello">Hello %1$s</string>
 </resources>
