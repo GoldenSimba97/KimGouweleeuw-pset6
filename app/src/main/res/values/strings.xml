@@ -9,4 +9,5 @@
     <string name="results">Search results</string>
     <string name="noresults">No search results found</string>
     <string name="hello">Hello %1$s</string>
+    <string name="description"><b>Book description</b> %1$s</string>
 </resources>

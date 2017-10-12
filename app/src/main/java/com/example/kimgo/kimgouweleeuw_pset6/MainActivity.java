@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("log", "logged in");
                             Toast.makeText(MainActivity.this, "Loged in user: " + email + " successfully",
                                     Toast.LENGTH_SHORT).show();
-                            firebaseListener();
                             goToSecondActivity();
                         }
                     }
@@ -130,13 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    private class registerUser implements View.OnClickListener {
-//        @Override public void onClick(View view) {
-//            Intent intent = new Intent(view.getContext(), RegisterActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
 
     public void goToRegisterUser() {
         TextView register = (TextView) findViewById(R.id.registerText);

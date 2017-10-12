@@ -154,7 +154,6 @@ public class SecondActivity extends AppCompatActivity {
     private class logOut implements View.OnClickListener {
         @Override public void onClick(View view) {
             authTest.signOut();
-            setListener();
             Intent logOutIntent = new Intent(secondAct, MainActivity.class);
             startActivity(logOutIntent);
         }
