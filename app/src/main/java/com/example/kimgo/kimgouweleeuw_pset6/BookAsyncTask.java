@@ -79,8 +79,8 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
                 list.add("Title: " + title);
                 list.add("Author: " + author);
                 list.add("Publisher: " + publisher);
-                list.add("Publication data: " + publishedDate);
-                list.add("Book description: " + description);
+                list.add("Publication date: " + publishedDate);
+                list.add(description);
             }
         } catch (JSONException e) {
             e.printStackTrace();

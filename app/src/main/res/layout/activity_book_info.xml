@@ -11,5 +11,13 @@
         android:id="@+id/showBookInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:text=""
+        android:maxLines = "100"
+        android:scrollbars = "vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <!--<WebView-->
+        <!--android:id="@+id/showBookDescription"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 </LinearLayout>
