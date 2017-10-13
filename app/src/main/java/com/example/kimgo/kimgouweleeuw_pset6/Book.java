@@ -10,6 +10,7 @@ public class Book {
     public String publisher;
     public String publishedDate;
     public String description;
+    public int rank;
 
     // Default constructor for firebase
     public Book() {}
@@ -20,5 +21,6 @@ public class Book {
         this.publisher = aPublisher;
         this.publishedDate = aPublishedDate;
         this.description = aDescription;
+        this.rank = 0;
     }
 }

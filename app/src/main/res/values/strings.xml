@@ -11,6 +11,8 @@
     <string name="hello">Hello %1$s</string>
     <string name="description"><b>Book description</b> %1$s</string>
     <string name="mybooks">My books</string>
-    <string name="read">Read</string>
+    <string name="read">Already read</string>
     <string name="toread">Want to read</string>
+    <string name="addread">Add to already read</string>
+    <string name="addtoread">Add to want to read</string>
 </resources>

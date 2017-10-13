@@ -50,11 +50,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:maxLines = "100"
+        android:maxLines = "25"
         android:scrollbars = "vertical"
         android:paddingStart="5dp"
         android:paddingEnd="0dp"
+        android:layout_gravity="fill"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addReadButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/addread" />
+
+        <Button
+            android:id="@+id/addToReadButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/addtoread" />
+
+    </LinearLayout>
 
 
 </LinearLayout>
