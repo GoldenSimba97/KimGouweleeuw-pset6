@@ -27,7 +27,8 @@
         <activity
             android:name=".RegisterActivity"
             android:windowSoftInputMode="stateVisible" />
-        <activity android:name=".BookInfoActivity"></activity>
+        <activity android:name=".BookInfoActivity" />
+        <activity android:name=".MyBooksActivity"></activity>
     </application>
 
 </manifest>

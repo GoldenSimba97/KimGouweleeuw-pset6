@@ -37,6 +37,7 @@ public class BookInfoActivity extends AppCompatActivity {
         asyncTask.execute(bookID);
 
         findViewById(R.id.logOutButton).setOnClickListener(new logOut());
+        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
     }
 
     public void bookInfoShow(ArrayList<String> bookInfoArray) {
@@ -59,8 +60,14 @@ public class BookInfoActivity extends AppCompatActivity {
     private class logOut implements View.OnClickListener {
         @Override public void onClick(View view) {
             FirebaseAuth.getInstance().signOut();
-            Intent logOutIntent = new Intent(BookInfoActivity.this, MainActivity.class);
-            startActivity(logOutIntent);
+            startActivity(new Intent(bookAct, MainActivity.class));
+        }
+    }
+
+    private class goToMyBooks implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(bookAct, MyBooksActivity.class));
         }
     }
 }

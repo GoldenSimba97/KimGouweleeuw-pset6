@@ -19,7 +19,19 @@
             android:layout_height="wrap_content"
             android:layout_weight=".3"
             android:text=""
-            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title" />
+            android:paddingStart="5dp"
+            android:paddingEnd="0dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle" />
+
+        <Button
+            android:id="@+id/myBooksButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/small_heart"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:text="@string/mybooks" />
 
         <ImageButton
             android:id="@+id/logOutButton"
