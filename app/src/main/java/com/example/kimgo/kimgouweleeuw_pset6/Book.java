@@ -23,4 +23,8 @@ public class Book {
         this.description = aDescription;
         this.rank = 0;
     }
+
+    public String getTitle() { return title; }
+
+    public String getAuthor() { return author; }
 }

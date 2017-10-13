@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.example.kimgo.kimgouweleeuw_pset6.ShowListsActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/myBookListText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text=""
+            android:paddingStart="5dp"
+            android:paddingEnd="0dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <ImageButton
+            android:id="@+id/logOutButton"
+            android:layout_width="44dp"
+            android:layout_height="43dp"
+            android:layout_gravity="top|end"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            app:srcCompat="@drawable/log_out" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/myBooksView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

@@ -172,8 +172,11 @@ public class BookInfoActivity extends AppCompatActivity {
         // Ad an object to the database
         Book book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
 
-        DatabaseReference booksRef = mDatabase.child("books");
+//        DatabaseReference booksRef = mDatabase.child("books");
+//
+//        booksRef.child(user.getUid()).child(listType).push().setValue(book);
 
-        booksRef.child(user.getUid()).child(listType).push().setValue(book);
+        mDatabase.child("books").child(user.getUid()).child(listType).setValue(book);
+        // misschien toch push() gebruiken voor key.
     }
 }
