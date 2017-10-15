@@ -1,10 +1,13 @@
 package com.example.kimgo.kimgouweleeuw_pset6;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,11 +31,16 @@ public class ShowListsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     String list;
     TextView showList;
+    ShowListsActivity showListsAct;
+    ListView lvItems;
+    ArrayList<Book> booksArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_lists);
+
+        showListsAct = this;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -44,6 +52,10 @@ public class ShowListsActivity extends AppCompatActivity {
         showList = (TextView) findViewById(R.id.myBookListText);
 
         showBooksList();
+
+        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
+        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
+//        lvItems.setOnItemClickListener(new goToTodo());
     }
 
     public void firebaseListener() {
@@ -83,37 +95,25 @@ public class ShowListsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get object out of database
-//                String key = dataSnapshot.getKey();
-//                Log.d("key", key);
                 FirebaseUser user = mAuth.getCurrentUser();
                 ArrayList<String> booksList = new ArrayList<>();
                 assert user != null;
-//                Book book = dataSnapshot.child("books").child(user.getUid()).child(list).getValue(Book.class);
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
-//                Log.d("data", myBooks.getValue().toString());
-//                Log.d("data", myBooks.getKey());
                 for (DataSnapshot myBook: myBooks.getChildren()) {
                     Book book = myBook.getValue(Book.class);
-//                    Log.d("data", book.getTitle());
+                    booksArray.add(book);
                     String title = book.getTitle();
                     String author = book.getAuthor();
-                    int endIndex = title.indexOf(":");
-                    int endIndex2 = author.indexOf(":");
                     title = title.replace(title.substring(0, title.indexOf(":") + 2), "");
                     author = author.replace(author.substring(0, author.indexOf(":") + 2), "");
                     booksList.add(title + " - " + author);
                     bookListAdapter(booksList);
                 }
-//                String title = book.getTitle();
-//                String author = book.getAuthor();
-//                booksList.add(title + " - " + author);
-//                bookListAdapter(booksList);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ShowListsActivity.this, "The read failed: " + databaseError.getCode(),
-                        Toast.LENGTH_SHORT).show();
+                Log.d("read_failed", "The read failed: " + databaseError.getCode());
             }
         };
         mDatabase.addValueEventListener(postListener);
@@ -134,10 +134,42 @@ public class ShowListsActivity extends AppCompatActivity {
     public void bookListAdapter(ArrayList<String> booksList) {
         ArrayAdapter arrayAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, booksList);
-        ListView lvItems = (ListView) findViewById(R.id.myBooksView);
+        lvItems = (ListView) findViewById(R.id.myBooksView);
         assert lvItems != null;
         lvItems.setAdapter(arrayAdapter);
 //        lvItems.setOnItemClickListener(new SecondActivity.goToBookInfo());
 
     }
+
+
+    private class logOut implements View.OnClickListener {
+        @Override public void onClick(View view) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(showListsAct, MainActivity.class));
+        }
+    }
+
+
+    private class goToMyBooks implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(showListsAct, MyBooksActivity.class));
+        }
+    }
+
+
+//    private class goToTodo implements AdapterView.OnItemClickListener {
+//        @Override
+//        public void onItemClick(AdapterView<?> parent, View view,
+//                                int position, long id) {
+//            String book = ((TextView) view).getText().toString();
+//
+//            Intent intent = new Intent(view.getContext(), SecondActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("listTitle", toDo.getTitle());
+//            bundle.putInt("listID", toDo.getID());
+//            intent.putExtras(bundle);
+//            startActivity(intent);
+//        }
+//    }
 }

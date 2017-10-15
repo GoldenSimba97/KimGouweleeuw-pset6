@@ -22,8 +22,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -142,41 +145,60 @@ public class BookInfoActivity extends AppCompatActivity {
     private class addToAlreadyRead implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            FirebaseUser user = mAuth.getCurrentUser();
-            addToDatabase("read", user);
-            Toast.makeText(bookAct, "Book added successfully to Already Read list",
-                    Toast.LENGTH_SHORT).show();
+            addToDatabase("read");
         }
     }
 
     private class addToWantToRead implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            FirebaseUser user = mAuth.getCurrentUser();
-            addToDatabase("toread", user);
-            Toast.makeText(bookAct, "Book added successfully to Want To Read list",
-                    Toast.LENGTH_SHORT).show();
+            addToDatabase("toread");
         }
     }
 
 
 
-    public void addToDatabase(String listType, FirebaseUser user) {
-//        ArrayList<String> info = new ArrayList<>();;
-//        for (int i = 0; i < allBookInfo.size() - 1; ++i) {
-//            String bookInfo = allBookInfo.get(i);
-//            int endIndex = bookInfo.indexOf(":");
-//            info.add(bookInfo.replace(bookInfo.substring(0, endIndex + 1), ""));
-//        }
-
+    public void addToDatabase(final String listType) {
         // Ad an object to the database
-        Book book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
+        final Book book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
+        final String bookID = allBookInfo.get(0) + " - " + allBookInfo.get(1);
 
-//        DatabaseReference booksRef = mDatabase.child("books");
-//
-//        booksRef.child(user.getUid()).child(listType).push().setValue(book);
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get object out of database
+                FirebaseUser user = mAuth.getCurrentUser();
+                assert user != null;
+                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(listType);
+                if (myBooks.child(bookID).exists()) {
+                    if (listType.equals("read")) {
+                        Toast.makeText(bookAct, "Book has already been added to the Already Read list",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(bookAct, "Book has already been added to the Want To Read list",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    mDatabase.child("books").child(user.getUid()).child(listType).child(bookID).setValue(book);
+                    if (listType.equals("read")) {
+                        Toast.makeText(bookAct, "Book added successfully to Already Read list",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(bookAct, "Book added successfully to Want To Read list",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
 
-        mDatabase.child("books").child(user.getUid()).child(listType).setValue(book);
-        // misschien toch push() gebruiken voor key.
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("read_failed", "The read failed: " + databaseError.getCode());
+            }
+        };
+        mDatabase.addListenerForSingleValueEvent(postListener);
     }
+
+
+
+
 }

@@ -22,6 +22,16 @@
             android:paddingEnd="0dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
+        <Button
+            android:id="@+id/myBooksButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/small_heart"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:text="@string/mybooks" />
+
         <ImageButton
             android:id="@+id/logOutButton"
             android:layout_width="44dp"
