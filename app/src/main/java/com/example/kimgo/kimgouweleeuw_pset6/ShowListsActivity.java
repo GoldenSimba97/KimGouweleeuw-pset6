@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class ShowListsActivity extends AppCompatActivity {
@@ -86,12 +88,26 @@ public class ShowListsActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 ArrayList<String> booksList = new ArrayList<>();
                 assert user != null;
-                Book book = dataSnapshot.child("books").child(user.getUid()).child(list).getValue(Book.class);
-                String title = book.getTitle();
-                String author = book.getAuthor();
-                booksList.add(title + " - " + author);
-                bookListAdapter(booksList);
-//                Fruit aFruit = dataSnapshot.child("fruitbasket").child("fruit1").getValue(Fruit.class);
+//                Book book = dataSnapshot.child("books").child(user.getUid()).child(list).getValue(Book.class);
+                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
+//                Log.d("data", myBooks.getValue().toString());
+//                Log.d("data", myBooks.getKey());
+                for (DataSnapshot myBook: myBooks.getChildren()) {
+                    Book book = myBook.getValue(Book.class);
+//                    Log.d("data", book.getTitle());
+                    String title = book.getTitle();
+                    String author = book.getAuthor();
+                    int endIndex = title.indexOf(":");
+                    int endIndex2 = author.indexOf(":");
+                    title = title.replace(title.substring(0, title.indexOf(":") + 2), "");
+                    author = author.replace(author.substring(0, author.indexOf(":") + 2), "");
+                    booksList.add(title + " - " + author);
+                    bookListAdapter(booksList);
+                }
+//                String title = book.getTitle();
+//                String author = book.getAuthor();
+//                booksList.add(title + " - " + author);
+//                bookListAdapter(booksList);
             }
 
             @Override
