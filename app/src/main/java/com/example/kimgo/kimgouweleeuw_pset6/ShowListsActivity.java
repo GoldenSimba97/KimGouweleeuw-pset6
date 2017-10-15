@@ -7,6 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.method.ScrollingMovementMethod;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +40,6 @@ public class ShowListsActivity extends AppCompatActivity {
     TextView showList;
     ShowListsActivity showListsAct;
     ListView lvItems;
-    ArrayList<Book> booksArray = new ArrayList<>();
     ArrayAdapter arrayAdapter;
 
     @Override
@@ -61,6 +65,7 @@ public class ShowListsActivity extends AppCompatActivity {
         findViewById(R.id.logOutButton).setOnClickListener(new logOut());
         findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
         lvItems.setOnItemLongClickListener(new deleteBook());
+        lvItems.setOnItemClickListener(new showBook());
     }
 
     public void firebaseListener() {
@@ -106,7 +111,6 @@ public class ShowListsActivity extends AppCompatActivity {
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
                 for (DataSnapshot myBook: myBooks.getChildren()) {
                     Book book = myBook.getValue(Book.class);
-                    booksArray.add(book);
                     String title = book.getTitle();
                     String author = book.getAuthor();
                     title = title.replace(title.substring(0, title.indexOf(":") + 2), "");
@@ -166,10 +170,11 @@ public class ShowListsActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view,
                                 int position, long id) {
-//            String book = ((TextView) view).getText().toString();
-//
-//            book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
+            String book = ((TextView) view).getText().toString();
+
+            book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
 //            Log.d("book", book);
+            getBookInfo(book);
 
 //            Intent intent = new Intent(view.getContext(), SecondActivity.class);
 //            Bundle bundle = new Bundle();
@@ -178,6 +183,31 @@ public class ShowListsActivity extends AppCompatActivity {
 //            intent.putExtras(bundle);
 //            startActivity(intent);
         }
+    }
+
+
+    public void getBookInfo(final String book) {
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get object out of database
+                FirebaseUser user = mAuth.getCurrentUser();
+                assert user != null;
+                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
+                Book myBook = myBooks.child(book).getValue(Book.class);
+                Intent intent = new Intent(showListsAct, MyBookInfoActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("book", myBook);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("read_failed", "The read failed: " + databaseError.getCode());
+            }
+        };
+        mDatabase.addValueEventListener(postListener);
     }
 
 
