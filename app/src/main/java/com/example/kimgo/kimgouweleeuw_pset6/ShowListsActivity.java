@@ -176,7 +176,17 @@ public class ShowListsActivity extends ActionbarActivity {
 
             book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
             String bookID = book.replaceAll("\\.", "");
+//            FirebaseUser user = mAuth.getCurrentUser();
+//            assert user != null;
             getBookInfo(bookID);
+//            Book myBook = getBookInfo(bookID);
+//            Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("book", myBook);
+//            intent.putExtras(bundle);
+//            intent.putExtra("list", list);
+//            startActivity(intent);
+//            finish();
         }
     }
 
@@ -190,12 +200,14 @@ public class ShowListsActivity extends ActionbarActivity {
                 assert user != null;
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
                 Book myBook = myBooks.child(book).getValue(Book.class);
-                Intent intent = new Intent(showListsAct, MyBookInfoActivity.class);
+                Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("book", myBook);
                 intent.putExtras(bundle);
                 intent.putExtra("list", list);
                 startActivity(intent);
+                finish();
             }
 
             @Override
@@ -203,7 +215,7 @@ public class ShowListsActivity extends ActionbarActivity {
                 Log.d("read_failed", "The read failed: " + databaseError.getCode());
             }
         };
-        mDatabase.addValueEventListener(postListener);
+        mDatabase.addListenerForSingleValueEvent(postListener);
     }
 
 

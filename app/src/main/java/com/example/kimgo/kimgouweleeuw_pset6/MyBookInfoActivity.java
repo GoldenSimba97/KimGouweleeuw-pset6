@@ -27,9 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 import static java.lang.String.valueOf;
 
 public class MyBookInfoActivity extends ActionbarActivity {
-    MyBookInfoActivity myBookInfoAct;
+//    MyBookInfoActivity myBookInfoAct;
     Book book;
     String listType;
+    SpannableStringBuilder builder = new SpannableStringBuilder();
     RatingBar ratingBar;
     private DatabaseReference mDatabase;
 //    private FirebaseAuth.AuthStateListener mAuthListener;
@@ -40,7 +41,9 @@ public class MyBookInfoActivity extends ActionbarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_book_info);
 
-        myBookInfoAct = this;
+        Log.d("emsee", "activity2");
+
+//        myBookInfoAct = this;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -59,6 +62,14 @@ public class MyBookInfoActivity extends ActionbarActivity {
 
 //        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
 //        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Remove the activity when its off the screen
+        finish();
     }
 
 
@@ -97,33 +108,44 @@ public class MyBookInfoActivity extends ActionbarActivity {
     public void showBookInfo() {
         TextView info = (TextView)findViewById(R.id.showBookInfo);
         info.setMovementMethod(new ScrollingMovementMethod());
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+//        SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        SpannableStringBuilder title = new SpannableStringBuilder(book.getTitle());
-        title.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getTitle().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        builder.append(title).append("\n");
-
-        SpannableStringBuilder author = new SpannableStringBuilder(book.getAuthor());
-        author.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getAuthor().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        builder.append(author).append("\n");
-
-        SpannableStringBuilder publisher = new SpannableStringBuilder(book.getPublisher());
-        publisher.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getPublisher().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        builder.append(publisher).append("\n");
-
-        SpannableStringBuilder publishedDate = new SpannableStringBuilder(book.getPublishedDate());
-        publishedDate.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getPublishedDate().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        builder.append(publishedDate).append("\n");
+//        SpannableStringBuilder title = new SpannableStringBuilder(book.getTitle());
+//        title.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getTitle().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        builder.append(title).append("\n");
+//
+//        SpannableStringBuilder author = new SpannableStringBuilder(book.getAuthor());
+//        author.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getAuthor().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        builder.append(author).append("\n");
+//
+//        SpannableStringBuilder publisher = new SpannableStringBuilder(book.getPublisher());
+//        publisher.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getPublisher().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        builder.append(publisher).append("\n");
+//
+//        SpannableStringBuilder publishedDate = new SpannableStringBuilder(book.getPublishedDate());
+//        publishedDate.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, book.getPublishedDate().indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        builder.append(publishedDate).append("\n");
 
         float rating = book.getRating();
         if (rating > 0) {
             ratingBar.setRating(rating);
         }
 
+        addToString(book.getTitle());
+        addToString(book.getAuthor());
+        addToString(book.getPublisher());
+        addToString(book.getPublishedDate());
+
         SpannableStringBuilder description = new SpannableStringBuilder("Book description: ");
         description.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         info.setText(builder.append(description.append(Html.fromHtml(book.getDescription(), Html.FROM_HTML_MODE_LEGACY))));
 
+    }
+
+    public void addToString(String string) {
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(string);
+        stringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, string.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        builder.append(stringBuilder).append("\n");
     }
 
     public void setRating() {

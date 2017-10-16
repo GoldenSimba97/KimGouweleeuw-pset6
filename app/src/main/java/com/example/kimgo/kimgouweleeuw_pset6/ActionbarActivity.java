@@ -38,13 +38,17 @@ public class ActionbarActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
         case R.id.action_search:
             startActivity(new Intent(actionbarAct, SecondActivity.class));
+            finish();
             return(true);
         case R.id.action_mybooks:
             startActivity(new Intent(actionbarAct, MyBooksActivity.class));
+            finish();
             return(true);
         case R.id.action_logout:
             mAuth.signOut();
             startActivity(new Intent(actionbarAct, MainActivity.class));
+            finish();
+            return(true);
     }
         return(super.onOptionsItemSelected(item));
     }

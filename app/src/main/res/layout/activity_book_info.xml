@@ -50,21 +50,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:paddingStart="5dp"
-        android:paddingEnd="0dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-
-    <TextView
-        android:id="@+id/showBookDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
         android:maxLines = "25"
-        android:scrollbars = "vertical"
         android:paddingStart="5dp"
         android:paddingEnd="0dp"
         android:layout_gravity="fill"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/showBookDescription"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text=""-->
+        <!--android:maxLines = "25"-->
+        <!--android:scrollbars = "vertical"-->
+        <!--android:paddingStart="5dp"-->
+        <!--android:paddingEnd="0dp"-->
+        <!--android:layout_gravity="fill"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
 
     <View
         android:layout_width="1dp"

@@ -178,35 +178,5 @@ public class SecondActivity extends ActionbarActivity {
 //    }
 
 
-//    public void addToDatabase(View view) {
-//        EditText et1 = (EditText) findViewById(R.id.editText);
-//        EditText et2 = (EditText) findViewById(R.id.editText2);
-//
-//        // Get values from edittexts
-//        String name = et1.getText().toString();
-//        String color = et2.getText().toString();
-//
-//        // Add an object to the database
-//        Fruit aFruit = new Fruit(name, color);
-//
-//        mDatabase.child("fruitbasket").child("fruit1").setValue(aFruit);
-//    }
-//
-//
-//    // kan ook read data once gebruiken
-//    public void getFromDatabase(View view) {
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Get object out of database
-//                Fruit aFruit = dataSnapshot.child("fruitbasket").child("fruit1").getValue(Fruit.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        mDatabase.addValueEventListener(postListener);
-//    }
+
 }

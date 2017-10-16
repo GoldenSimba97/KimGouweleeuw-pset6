@@ -33,8 +33,10 @@
         <activity android:name=".ShowListsActivity" />
         <activity
             android:name=".MyBookInfoActivity"
-            android:launchMode="singleInstance" />
-        <activity android:name=".ActionbarActivity"></activity>
+            android:launchMode="singleInstance"
+            android:noHistory="true" />
+        <activity android:name=".ActionbarActivity" />
+        <activity android:name=".ShowMyBookActivity"></activity>
     </application>
 
 </manifest>

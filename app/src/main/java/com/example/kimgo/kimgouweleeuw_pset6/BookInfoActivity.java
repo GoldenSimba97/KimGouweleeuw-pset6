@@ -95,8 +95,8 @@ public class BookInfoActivity extends ActionbarActivity {
     public void bookInfoShow(ArrayList<String> bookInfoArray) {
         allBookInfo = bookInfoArray;
         TextView info = (TextView)findViewById(R.id.showBookInfo);
-        TextView description = (TextView)findViewById(R.id.showBookDescription);
-        description.setMovementMethod(new ScrollingMovementMethod());
+//        TextView description = (TextView)findViewById(R.id.showBookDescription);
+        info.setMovementMethod(new ScrollingMovementMethod());
         SpannableStringBuilder builder = new SpannableStringBuilder();
         for (int i = 0; i < bookInfoArray.size() - 1; ++i) {
             String bookInfo = bookInfoArray.get(i);
@@ -106,8 +106,8 @@ public class BookInfoActivity extends ActionbarActivity {
         }
         SpannableStringBuilder information = new SpannableStringBuilder("Book description: ");
         information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        info.setText(builder);
-        description.setText(information.append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
+        info.setText(builder.append(information).append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
+//        description.setText(information.append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
     }
 
 //    private class logOut implements View.OnClickListener {
@@ -147,6 +147,8 @@ public class BookInfoActivity extends ActionbarActivity {
         @Override
         public void onClick(View view) {
             addToDatabase("read");
+//            startActivity(new Intent(bookAct, SecondActivity.class));
+//            finish();
         }
     }
 
@@ -154,6 +156,8 @@ public class BookInfoActivity extends ActionbarActivity {
         @Override
         public void onClick(View view) {
             addToDatabase("toread");
+//            startActivity(new Intent(bookAct, SecondActivity.class));
+//            finish();
         }
     }
 
