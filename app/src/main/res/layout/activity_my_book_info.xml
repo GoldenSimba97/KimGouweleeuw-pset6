@@ -21,6 +21,7 @@
             android:numStars="5"
             android:rating="0.0"
             android:stepSize="1.0"
+            android:clickable="true"
             android:visibility="visible" />
 
         <!--<TextView-->

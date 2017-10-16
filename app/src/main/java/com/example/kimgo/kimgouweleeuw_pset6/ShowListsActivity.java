@@ -106,6 +106,7 @@ public class ShowListsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get object out of database
                 FirebaseUser user = mAuth.getCurrentUser();
+                Log.d("hello", "hello");
                 ArrayList<String> booksList = new ArrayList<>();
                 assert user != null;
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
@@ -116,8 +117,8 @@ public class ShowListsActivity extends AppCompatActivity {
                     title = title.replace(title.substring(0, title.indexOf(":") + 2), "");
                     author = author.replace(author.substring(0, author.indexOf(":") + 2), "");
                     booksList.add(title + " - " + author);
-                    bookListAdapter(booksList);
                 }
+                bookListAdapter(booksList);
             }
 
             @Override
@@ -141,6 +142,7 @@ public class ShowListsActivity extends AppCompatActivity {
 
 
     public void bookListAdapter(ArrayList<String> booksList) {
+        Log.d("hoi", "adapter");
         arrayAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, booksList);
         assert lvItems != null;
@@ -173,15 +175,8 @@ public class ShowListsActivity extends AppCompatActivity {
             String book = ((TextView) view).getText().toString();
 
             book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
-//            Log.d("book", book);
-            getBookInfo(book);
-
-//            Intent intent = new Intent(view.getContext(), SecondActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("listTitle", toDo.getTitle());
-//            bundle.putInt("listID", toDo.getID());
-//            intent.putExtras(bundle);
-//            startActivity(intent);
+            String bookID = book.replaceAll("\\.", "");
+            getBookInfo(bookID);
         }
     }
 
@@ -199,6 +194,7 @@ public class ShowListsActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("book", myBook);
                 intent.putExtras(bundle);
+                intent.putExtra("list", list);
                 startActivity(intent);
             }
 
@@ -217,8 +213,9 @@ public class ShowListsActivity extends AppCompatActivity {
                                        int position, long id) {
             String book = ((TextView) view).getText().toString();
             book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
+            String bookID = book.replaceAll("\\.", "");
 
-            showPopUp(book);
+            showPopUp(bookID);
             getFromDatabase();
             return true;
         }

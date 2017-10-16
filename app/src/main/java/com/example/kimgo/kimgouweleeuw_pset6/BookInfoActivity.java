@@ -161,7 +161,9 @@ public class BookInfoActivity extends AppCompatActivity {
     public void addToDatabase(final String listType) {
         // Ad an object to the database
         final Book book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
-        final String bookID = allBookInfo.get(0) + " - " + allBookInfo.get(1);
+        String ID = allBookInfo.get(0) + " - " + allBookInfo.get(1);
+        final String bookID = ID.replaceAll("\\.", "");
+        Log.d("id", bookID);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
