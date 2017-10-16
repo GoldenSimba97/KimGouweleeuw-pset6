@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KimGouweleeuw-pset6</string>
+    <string name="app_name">GreatReads</string>
     <string name="login">Log in</string>
     <string name="register">Register</string>
     <string name="noAccount">Don\'t have an account yet? Please register to continue!</string>
@@ -15,4 +15,5 @@
     <string name="toread">Want To Read</string>
     <string name="addread">Add to already read</string>
     <string name="addtoread">Add to want to read</string>
+    <string name="logout">Log out</string>
 </resources>

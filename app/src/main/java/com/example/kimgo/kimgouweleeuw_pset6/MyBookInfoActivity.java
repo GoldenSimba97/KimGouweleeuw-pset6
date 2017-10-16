@@ -56,6 +56,9 @@ public class MyBookInfoActivity extends AppCompatActivity {
         showBookInfo();
 
         setRating();
+
+        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
+        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
     }
 
 
@@ -168,6 +171,21 @@ public class MyBookInfoActivity extends AppCompatActivity {
         mDatabase.addListenerForSingleValueEvent(postListener);
     }
 
+
+    private class logOut implements View.OnClickListener {
+        @Override public void onClick(View view) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(myBookInfoAct, MainActivity.class));
+        }
+    }
+
+
+    private class goToMyBooks implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(myBookInfoAct, MyBooksActivity.class));
+        }
+    }
 
 
 }

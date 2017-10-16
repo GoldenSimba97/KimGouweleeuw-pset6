@@ -35,6 +35,7 @@ public class MyBooksActivity extends AppCompatActivity {
             Intent readIntent = new Intent(myBooksAct, ShowListsActivity.class);
             readIntent.putExtra("list", "read");
             startActivity(readIntent);
+            finish();
         }
     }
 
@@ -43,6 +44,7 @@ public class MyBooksActivity extends AppCompatActivity {
             Intent toReadIntent = new Intent(myBooksAct, ShowListsActivity.class);
             toReadIntent.putExtra("list", "toread");
             startActivity(toReadIntent);
+            finish();
         }
     }
 }

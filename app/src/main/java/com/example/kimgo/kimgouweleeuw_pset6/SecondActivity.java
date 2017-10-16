@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -25,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class SecondActivity extends AppCompatActivity {
+public class SecondActivity extends ActionbarActivity {
     private FirebaseAuth authTest;
     private FirebaseAuth.AuthStateListener authListenerTest;
     private static final String TAG = "Firebase_test";
@@ -39,6 +40,9 @@ public class SecondActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+
+//        ActionbarActivity actionBar = new ActionbarActivity();
+
         secondAct = this;
 
         setListener();
@@ -54,6 +58,13 @@ public class SecondActivity extends AppCompatActivity {
 
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main_menu, menu);
+//        return true;
+//    }
 
 
     /* Sets the authstate listener. This checks whether there is still a user logged in at
