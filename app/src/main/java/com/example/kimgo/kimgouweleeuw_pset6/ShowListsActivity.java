@@ -32,9 +32,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ShowListsActivity extends AppCompatActivity {
+public class ShowListsActivity extends ActionbarActivity {
     private DatabaseReference mDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+//    private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
     String list;
     TextView showList;
@@ -51,7 +51,7 @@ public class ShowListsActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        firebaseListener();
+//        firebaseListener();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -62,43 +62,43 @@ public class ShowListsActivity extends AppCompatActivity {
 
         showBooksList();
 
-        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
-        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
+//        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
+//        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
         lvItems.setOnItemLongClickListener(new deleteBook());
         lvItems.setOnItemClickListener(new showBook());
     }
 
-    public void firebaseListener() {
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d("Signed out", "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-    }
-
-    /* Lifecycle methods. */
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
+//    public void firebaseListener() {
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if (user != null) {
+//                    // User is signed in
+//                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
+//                } else {
+//                    // User is signed out
+//                    Log.d("Signed out", "onAuthStateChanged:signed_out");
+//                }
+//            }
+//        };
+//    }
+//
+//    /* Lifecycle methods. */
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        mAuth.addAuthStateListener(mAuthListener);
+//    }
+//
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        if (mAuthListener != null) {
+//            mAuth.removeAuthStateListener(mAuthListener);
+//        }
+//    }
 
     public void getFromDatabase() {
         ValueEventListener postListener = new ValueEventListener() {
@@ -152,20 +152,20 @@ public class ShowListsActivity extends AppCompatActivity {
     }
 
 
-    private class logOut implements View.OnClickListener {
-        @Override public void onClick(View view) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(showListsAct, MainActivity.class));
-        }
-    }
-
-
-    private class goToMyBooks implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(showListsAct, MyBooksActivity.class));
-        }
-    }
+//    private class logOut implements View.OnClickListener {
+//        @Override public void onClick(View view) {
+//            FirebaseAuth.getInstance().signOut();
+//            startActivity(new Intent(showListsAct, MainActivity.class));
+//        }
+//    }
+//
+//
+//    private class goToMyBooks implements View.OnClickListener {
+//        @Override
+//        public void onClick(View view) {
+//            startActivity(new Intent(showListsAct, MyBooksActivity.class));
+//        }
+//    }
 
 
     private class showBook implements AdapterView.OnItemClickListener {

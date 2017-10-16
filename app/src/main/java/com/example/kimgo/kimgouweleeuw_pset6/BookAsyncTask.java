@@ -19,7 +19,7 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
     private Context context;
     private SecondActivity secondAct;
     private BookInfoActivity bookAct;
-    private int type;
+    private Integer type;
 
     BookAsyncTask(SecondActivity second) {
         this.secondAct = second;
@@ -52,7 +52,7 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
         String author = "";
 //        Integer types;
 //        types = type;
-//        Log.d("title", types.toString());
+        Log.d("title", result);
 
         try {
             JSONObject bookStreamObj = new JSONObject(result);
@@ -88,6 +88,7 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
         if (type == 1) {
             this.secondAct.bookShow(list, idList);
         } else {
+            Log.d("booklist", list.toString());
             this.bookAct.bookInfoShow(list);
         }
     }

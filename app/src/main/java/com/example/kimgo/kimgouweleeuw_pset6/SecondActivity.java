@@ -53,8 +53,8 @@ public class SecondActivity extends ActionbarActivity {
         searchBooks.setHint("Search for books");
 
         findViewById(R.id.searchButton).setOnClickListener(new bookSearch());
-        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
-        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
+//        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
+//        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
 
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -163,19 +163,19 @@ public class SecondActivity extends ActionbarActivity {
     }
 
 
-    private class logOut implements View.OnClickListener {
-        @Override public void onClick(View view) {
-            authTest.signOut();
-            startActivity(new Intent(secondAct, MainActivity.class));
-        }
-    }
-
-    private class goToMyBooks implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(secondAct, MyBooksActivity.class));
-        }
-    }
+//    private class logOut implements View.OnClickListener {
+//        @Override public void onClick(View view) {
+//            authTest.signOut();
+//            startActivity(new Intent(secondAct, MainActivity.class));
+//        }
+//    }
+//
+//    private class goToMyBooks implements View.OnClickListener {
+//        @Override
+//        public void onClick(View view) {
+//            startActivity(new Intent(secondAct, MyBooksActivity.class));
+//        }
+//    }
 
 
 //    public void addToDatabase(View view) {

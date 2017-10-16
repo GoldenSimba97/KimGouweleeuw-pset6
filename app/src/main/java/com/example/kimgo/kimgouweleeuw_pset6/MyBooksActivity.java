@@ -8,7 +8,7 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
-public class MyBooksActivity extends AppCompatActivity {
+public class MyBooksActivity extends ActionbarActivity {
     MyBooksActivity myBooksAct;
 
     @Override
@@ -18,17 +18,17 @@ public class MyBooksActivity extends AppCompatActivity {
 
         myBooksAct = this;
 
-        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
+//        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
         findViewById(R.id.readButton).setOnClickListener(new goToAlreadyRead());
         findViewById(R.id.toReadButton).setOnClickListener(new goToWantToRead());
     }
 
-    private class logOut implements View.OnClickListener {
-        @Override public void onClick(View view) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(myBooksAct, MainActivity.class));
-        }
-    }
+//    private class logOut implements View.OnClickListener {
+//        @Override public void onClick(View view) {
+//            FirebaseAuth.getInstance().signOut();
+//            startActivity(new Intent(myBooksAct, MainActivity.class));
+//        }
+//    }
 
     private class goToAlreadyRead implements View.OnClickListener {
         @Override public void onClick(View view) {

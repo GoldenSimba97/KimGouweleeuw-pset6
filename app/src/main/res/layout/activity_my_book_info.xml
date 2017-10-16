@@ -7,61 +7,73 @@
     android:orientation="vertical"
     tools:context="com.example.kimgo.kimgouweleeuw_pset6.MyBookInfoActivity">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <!--<LinearLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="@android:style/Widget.Holo.RatingBar.Indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:isIndicator="false"
-            android:numStars="5"
-            android:rating="0.0"
-            android:stepSize="1.0"
-            android:clickable="true"
-            android:visibility="visible" />
-
-        <!--<TextView-->
-            <!--android:id="@+id/showBookInfo"-->
-            <!--android:layout_width="0dp"-->
+        <!--<RatingBar-->
+            <!--android:id="@+id/ratingBar"-->
+            <!--style="@android:style/Widget.Holo.RatingBar.Indicator"-->
+            <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight=".3"-->
-            <!--android:text=""-->
-            <!--android:paddingStart="5dp"-->
-            <!--android:paddingEnd="0dp"-->
-            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>-->
+            <!--android:isIndicator="false"-->
+            <!--android:numStars="5"-->
+            <!--android:rating="0.0"-->
+            <!--android:stepSize="1.0"-->
+            <!--android:clickable="true"-->
+            <!--android:visibility="visible" />-->
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            />
+        <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/showBookInfo"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight=".3"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text=""&ndash;&gt;-->
+            <!--&lt;!&ndash;android:paddingStart="5dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:paddingEnd="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>&ndash;&gt;-->
 
-        <Button
-            android:id="@+id/myBooksButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/small_heart"
-            android:layout_gravity="top|end"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:background="@null"
-            android:text="@string/mybooks" />
+        <!--<View-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--/>-->
 
-        <ImageButton
-            android:id="@+id/logOutButton"
-            android:layout_width="44dp"
-            android:layout_height="43dp"
-            android:layout_gravity="top|end"
-            android:adjustViewBounds="true"
-            android:background="@null"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/log_out" />
+        <!--<Button-->
+            <!--android:id="@+id/myBooksButton"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:drawableStart="@drawable/small_heart"-->
+            <!--android:layout_gravity="top|end"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:background="@null"-->
+            <!--android:text="@string/mybooks" />-->
 
-    </LinearLayout>
+        <!--<ImageButton-->
+            <!--android:id="@+id/logOutButton"-->
+            <!--android:layout_width="44dp"-->
+            <!--android:layout_height="43dp"-->
+            <!--android:layout_gravity="top|end"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:background="@null"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--app:srcCompat="@drawable/log_out" />-->
+
+    <!--</LinearLayout>-->
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="@android:style/Widget.Holo.RatingBar.Indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:rating="0.0"
+        android:stepSize="1.0"
+        android:clickable="true"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/showBookInfo"
