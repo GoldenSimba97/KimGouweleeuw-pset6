@@ -16,7 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -176,9 +178,10 @@ public class ShowListsActivity extends ActionbarActivity {
 
             book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
             String bookID = book.replaceAll("\\.", "");
+            accessDatabase(bookID, "view");
 //            FirebaseUser user = mAuth.getCurrentUser();
 //            assert user != null;
-            getBookInfo(bookID);
+//            getBookInfo(bookID);
 //            Book myBook = getBookInfo(bookID);
 //            Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
 //            Bundle bundle = new Bundle();
@@ -191,32 +194,32 @@ public class ShowListsActivity extends ActionbarActivity {
     }
 
 
-    public void getBookInfo(final String book) {
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get object out of database
-                FirebaseUser user = mAuth.getCurrentUser();
-                assert user != null;
-                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
-                Book myBook = myBooks.child(book).getValue(Book.class);
-                Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("book", myBook);
-                intent.putExtras(bundle);
-                intent.putExtra("list", list);
-                startActivity(intent);
-//                finish();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("read_failed", "The read failed: " + databaseError.getCode());
-            }
-        };
-        mDatabase.addListenerForSingleValueEvent(postListener);
-    }
+//    public void getBookInfo(final String book) {
+//        ValueEventListener postListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // Get object out of database
+//                FirebaseUser user = mAuth.getCurrentUser();
+//                assert user != null;
+//                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
+//                Book myBook = myBooks.child(book).getValue(Book.class);
+//                Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
+////                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("book", myBook);
+//                intent.putExtras(bundle);
+//                intent.putExtra("list", list);
+//                startActivity(intent);
+////                finish();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d("read_failed", "The read failed: " + databaseError.getCode());
+//            }
+//        };
+//        mDatabase.addListenerForSingleValueEvent(postListener);
+//    }
 
 
     private class deleteBook implements AdapterView.OnItemLongClickListener {
@@ -227,20 +230,22 @@ public class ShowListsActivity extends ActionbarActivity {
             book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
             String bookID = book.replaceAll("\\.", "");
 
-            showPopUp(bookID);
+//            showPopUp(bookID);
+            showPopUp(bookID, "delete");
             getFromDatabase();
             return true;
         }
     }
 
 
-    private void showPopUp(final String book) {
+    private void showPopUp(final String book, final String delete) {
         AlertDialog.Builder builder = new AlertDialog.Builder(showListsAct);
         builder.setCancelable(true);
         builder.setPositiveButton("Delete this book", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteFromDatabase(book);
+                accessDatabase(book, delete);
+//                deleteFromDatabase(book);
 //                Intent readIntent = new Intent(showListsAct, ShowListsActivity.class);
 //                readIntent.putExtra("list", list);
 //                startActivity(readIntent);
@@ -248,11 +253,11 @@ public class ShowListsActivity extends ActionbarActivity {
 //                getFromDatabase();
             }
         });
-        if (list.equals("read")) {
-            builder.setNegativeButton("Rank this book", new DialogInterface.OnClickListener() {
+        if (list.equals("toread")) {
+            builder.setNegativeButton("Move to Already Read list", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    accessDatabase(book, "move");
                 }
             });
         }
@@ -261,7 +266,27 @@ public class ShowListsActivity extends ActionbarActivity {
     }
 
 
-    public void deleteFromDatabase(final String book) {
+//    public void deleteFromDatabase(final String book) {
+//        ValueEventListener postListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // Get object out of database
+//                FirebaseUser user = mAuth.getCurrentUser();
+//                assert user != null;
+//                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
+//                myBooks.child(book).getRef().removeValue();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d("read_failed", "The read failed: " + databaseError.getCode());
+//            }
+//        };
+//        mDatabase.addListenerForSingleValueEvent(postListener);
+//    }
+
+
+    public void accessDatabase(final String bookID, final String action) {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -269,7 +294,24 @@ public class ShowListsActivity extends ActionbarActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 assert user != null;
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
-                myBooks.child(book).getRef().removeValue();
+                Book myBook = myBooks.child(bookID).getValue(Book.class);
+                switch (action) {
+                    case("view"):
+                        Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("book", myBook);
+                        intent.putExtras(bundle);
+                        intent.putExtra("list", list);
+                        startActivity(intent);
+                        break;
+                    case("delete"):
+                        myBooks.child(bookID).getRef().removeValue();
+                        break;
+                    case("move"):
+                        myBooks.child(bookID).getRef().removeValue();
+                        mDatabase.child("books").child(user.getUid()).child("read").child(bookID).setValue(myBook);
+                        break;
+                }
             }
 
             @Override
@@ -277,6 +319,6 @@ public class ShowListsActivity extends ActionbarActivity {
                 Log.d("read_failed", "The read failed: " + databaseError.getCode());
             }
         };
-        mDatabase.addValueEventListener(postListener);
+        mDatabase.addListenerForSingleValueEvent(postListener);
     }
 }
