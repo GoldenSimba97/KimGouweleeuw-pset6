@@ -75,12 +75,14 @@ public class BookAsyncTask extends AsyncTask<String, Integer, String> {
                 author = authorObj.getString(0);
                 String publisher = volumeObj.getString("publisher");
                 String publishedDate = volumeObj.getString("publishedDate");
-                String description = volumeObj.getString("description");
                 list.add("Title: " + title);
                 list.add("Author: " + author);
                 list.add("Publisher: " + publisher);
                 list.add("Publication date: " + publishedDate);
-                list.add(description);
+                if (volumeObj.has("description")) {
+                    String description = volumeObj.getString("description");
+                    list.add(description);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

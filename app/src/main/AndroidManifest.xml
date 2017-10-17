@@ -31,10 +31,6 @@
         <activity android:name=".BookInfoActivity" />
         <activity android:name=".MyBooksActivity" />
         <activity android:name=".ShowListsActivity" />
-        <activity
-            android:name=".MyBookInfoActivity"
-            android:launchMode="singleInstance"
-            android:noHistory="true" />
         <activity android:name=".ActionbarActivity" />
         <activity android:name=".ShowMyBookActivity"></activity>
     </application>

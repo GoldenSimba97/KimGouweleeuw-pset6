@@ -207,7 +207,7 @@ public class ShowListsActivity extends ActionbarActivity {
                 intent.putExtras(bundle);
                 intent.putExtra("list", list);
                 startActivity(intent);
-                finish();
+//                finish();
             }
 
             @Override

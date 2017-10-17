@@ -16,4 +16,5 @@
     <string name="addread">Add to already read</string>
     <string name="addtoread">Add to want to read</string>
     <string name="logout">Log out</string>
+    <string name="rate">Rate it: </string>
 </resources>

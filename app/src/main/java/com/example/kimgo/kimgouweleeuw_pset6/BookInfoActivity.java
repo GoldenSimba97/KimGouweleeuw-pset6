@@ -104,9 +104,18 @@ public class BookInfoActivity extends ActionbarActivity {
             information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bookInfo.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             builder.append(information).append("\n");
         }
-        SpannableStringBuilder information = new SpannableStringBuilder("Book description: ");
-        information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        info.setText(builder.append(information).append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
+        if (bookInfoArray.size() < 5) {
+            String bookInfo = bookInfoArray.get(3);
+            SpannableStringBuilder information = new SpannableStringBuilder(bookInfo);
+            information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bookInfo.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            builder.append(information).append("\n");
+            info.setText(builder);
+        } else {
+            SpannableStringBuilder information = new SpannableStringBuilder("Book description: ");
+            information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            info.setText(builder.append(information).append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
+        }
+
 //        description.setText(information.append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
     }
 
@@ -164,8 +173,13 @@ public class BookInfoActivity extends ActionbarActivity {
 
 
     public void addToDatabase(final String listType) {
+        final Book book;
         // Ad an object to the database
-        final Book book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
+        if (allBookInfo.size() < 5) {
+            book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3));
+        } else {
+            book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
+        }
         String ID = allBookInfo.get(0) + " - " + allBookInfo.get(1);
         final String bookID = ID.replaceAll("\\.", "");
         Log.d("id", bookID);

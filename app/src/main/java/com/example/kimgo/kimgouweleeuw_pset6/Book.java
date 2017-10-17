@@ -11,7 +11,7 @@ public class Book implements Serializable {
     public String author;
     public String publisher;
     public String publishedDate;
-    public String description;
+    public String description = "";
     public float rating;
 
     // Default constructor for firebase
@@ -23,6 +23,14 @@ public class Book implements Serializable {
         this.publisher = aPublisher;
         this.publishedDate = aPublishedDate;
         this.description = aDescription;
+        this.rating = 0;
+    }
+
+    public Book(String aTitle, String anAuthor, String aPublisher, String aPublishedDate) {
+        this.title = aTitle;
+        this.author = anAuthor;
+        this.publisher = aPublisher;
+        this.publishedDate = aPublishedDate;
         this.rating = 0;
     }
 

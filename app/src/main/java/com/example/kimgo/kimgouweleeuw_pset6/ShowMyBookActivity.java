@@ -8,6 +8,7 @@ import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -18,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 public class ShowMyBookActivity extends ActionbarActivity {
     Book book;
@@ -53,9 +56,14 @@ public class ShowMyBookActivity extends ActionbarActivity {
         TextView info = (TextView) findViewById(R.id.showBookInfo);
         info.setMovementMethod(new ScrollingMovementMethod());
 
-        float rating = book.getRating();
-        if (rating > 0) {
-            ratingBar.setRating(rating);
+        if (listType.equals("read")) {
+            ratingBar.setVisibility(View.VISIBLE);
+            TextView rateIt = (TextView) findViewById(R.id.textRateIt);
+            rateIt.setVisibility(View.VISIBLE);
+            float rating = book.getRating();
+            if (rating > 0) {
+                ratingBar.setRating(rating);
+            }
         }
 
         addToString(book.getTitle());
@@ -63,9 +71,14 @@ public class ShowMyBookActivity extends ActionbarActivity {
         addToString(book.getPublisher());
         addToString(book.getPublishedDate());
 
-        SpannableStringBuilder description = new SpannableStringBuilder("Book description: ");
-        description.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        info.setText(builder.append(description.append(Html.fromHtml(book.getDescription(), Html.FROM_HTML_MODE_LEGACY))));
+        if (book.getDescription().equals("")) {
+            info.setText(builder);
+        } else {
+            SpannableStringBuilder description = new SpannableStringBuilder("Book description: ");
+            description.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            info.setText(builder.append(description.append(Html.fromHtml(book.getDescription(), Html.FROM_HTML_MODE_LEGACY))));
+        }
+
     }
 
 
