@@ -1,19 +1,21 @@
+/*
+ * MainActivity. In this activity users have the opportunity to
+ * either log in or go to the RegisterActivity to register for
+ * the GreatReads app. This authentication is done using Firebase.
+ */
+
 package com.example.kimgo.kimgouweleeuw_pset6;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,13 +27,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
+    private MainActivity mainAct;
+    private EditText emailText;
+    private EditText passwordText;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    String email;
-    String password;
-    EditText emailText;
-    EditText passwordText;
-    MainActivity mainAct;
+    private String email;
+    private String password;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +58,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /* Checks if the user is logged in. */
     public void firebaseListener() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
+                    // User is logged in
                     Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
-                    // User is signed out
+                    // User is logged out
                     Log.d("Signed out", "onAuthStateChanged:signed_out");
                 }
             }
@@ -89,24 +93,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /* Logs in and authenticates user in Firebase with email and password. */
     public void logIn() {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("Sign in", "signInWithEmail:onComplete:" + task.isSuccessful());
+                        Log.d("Log in", "logInWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
+                        // If log in fails, display a message to the user. If log in succeeds
+                        // the auth state listener will be notified and the logged in user will
+                        // receive a message and be sent to the next activity.
                         if (!task.isSuccessful()) {
-                            Log.w("Email", "signInWithEmail:failed", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication Failed. Email and/or password are incorrect",
-                                    Toast.LENGTH_SHORT).show();
+                            Log.w("Email", "logInWithEmail:failed", task.getException());
+                            Toast.makeText(mainAct, "Authentication Failed. Email and/" +
+                                    "or password are incorrect", Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.d("log", "logged in");
-                            Toast.makeText(MainActivity.this, "Loged in user: " + email + " successfully",
-                                    Toast.LENGTH_SHORT).show();
+                            Log.d("Succes", "logged in");
+                            Toast.makeText(mainAct, "Loged in user: " + email +
+                                    " successfully", Toast.LENGTH_SHORT).show();
                             goToSecondActivity();
                         }
                     }
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /* Logs in user when log in button is clicked and email and password are filled in. */
     private class logInUser implements View.OnClickListener {
         @Override public void onClick(View view) {
             email = emailText.getText().toString();
@@ -124,12 +130,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /* Goes to SecondActivity. */
     private void goToSecondActivity() {
         startActivity(new Intent(mainAct, SecondActivity.class));
     }
 
 
 
+    /* Goes to register activity to register a new user when "here" is clicked. */
     public void goToRegisterUser() {
         TextView register = (TextView) findViewById(R.id.registerText);
         String registerHere = "Don't have an account yet? Register here to continue!";
@@ -141,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         ClickableSpan myClickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), RegisterActivity.class);
+                Intent intent = new Intent(mainAct, RegisterActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -149,19 +158,4 @@ public class MainActivity extends AppCompatActivity {
         mySpannable.setSpan(myClickableSpan, 36, 40, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-
-    public void getUser() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getToken() instead.
-            String uid = user.getUid();
-        }
-    }
 }

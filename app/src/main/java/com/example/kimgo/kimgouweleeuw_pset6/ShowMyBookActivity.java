@@ -1,6 +1,18 @@
+/*
+ * ShowMyBookActivity. In this activity users can view extra
+ * information about the book they have clicked on in the ShowLists-
+ * Activity. If the book is in the Already Read list, the user also
+ * has the option to give a rating to the book.
+ *
+ * Because this activity extends the ActionbarActivity the user can
+ * also click on the search icon to stay in the current activity,
+ * click on the heart icon to go to the MyBooksActivity to view the
+ * lists with books and click on the log out icon to log out and go
+ * back to the MainActivity.
+ */
+
 package com.example.kimgo.kimgouweleeuw_pset6;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
@@ -20,22 +32,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 public class ShowMyBookActivity extends ActionbarActivity {
-    Book book;
-    String listType;
-    SpannableStringBuilder builder = new SpannableStringBuilder();
-    RatingBar ratingBar;
-    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private Book book;
+    private String listType;
+    private RatingBar ratingBar;
+    private SpannableStringBuilder builder = new SpannableStringBuilder();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_my_book);
-
-        Log.d("emsee", "activity");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -52,10 +61,14 @@ public class ShowMyBookActivity extends ActionbarActivity {
     }
 
 
+    /* Show all information about the book. The user can also rate the book if it is in the
+     * Already Read list. */
     public void showBookInfo() {
         TextView info = (TextView) findViewById(R.id.showBookInfo);
+        // Make textview scrollable.
         info.setMovementMethod(new ScrollingMovementMethod());
 
+        // Show rating of book when in Already Read list.
         if (listType.equals("read")) {
             ratingBar.setVisibility(View.VISIBLE);
             TextView rateIt = (TextView) findViewById(R.id.textRateIt);
@@ -66,29 +79,36 @@ public class ShowMyBookActivity extends ActionbarActivity {
             }
         }
 
+        // Add all information to a string.
         addToString(book.getTitle());
         addToString(book.getAuthor());
         addToString(book.getPublisher());
         addToString(book.getPublishedDate());
 
+        // Correctly show the book information, including the html tags.
         if (book.getDescription().equals("")) {
             info.setText(builder);
         } else {
             SpannableStringBuilder description = new SpannableStringBuilder("Book description: ");
-            description.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            info.setText(builder.append(description.append(Html.fromHtml(book.getDescription(), Html.FROM_HTML_MODE_LEGACY))));
+            description.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            info.setText(builder.append(description.append(Html.fromHtml(book.getDescription(),
+                    Html.FROM_HTML_MODE_LEGACY))));
         }
-
     }
 
 
+    /* Make everything until ":" bold and add to the string. */
     public void addToString(String string) {
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(string);
-        stringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, string.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        stringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
+                string.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         builder.append(stringBuilder).append("\n");
     }
 
 
+    /* When the user has rated the book by clicking the number of stars it will be saved in the
+     * database. */
     public void setRating() {
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 
@@ -102,20 +122,20 @@ public class ShowMyBookActivity extends ActionbarActivity {
         });
     }
 
+
+    /* Add the Book object with the changed rating to the database to update the rating. */
     public void addToDatabase() {
-        // Ad an object to the database
         String ID = book.getTitle() + " - " + book.getAuthor();
         final String bookID = ID.replaceAll("\\.", "");
-        Log.d("id", bookID);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get object out of database
                 FirebaseUser user = mAuth.getCurrentUser();
                 assert user != null;
-                mDatabase.child("books").child(user.getUid()).child(listType).child(bookID).setValue(book);
-
+                // Add Book object to the database.
+                mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
+                        .setValue(book);
             }
 
             @Override
@@ -125,4 +145,5 @@ public class ShowMyBookActivity extends ActionbarActivity {
         };
         mDatabase.addListenerForSingleValueEvent(postListener);
     }
+
 }

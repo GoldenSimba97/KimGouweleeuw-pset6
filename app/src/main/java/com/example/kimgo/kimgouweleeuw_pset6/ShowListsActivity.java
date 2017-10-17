@@ -1,26 +1,32 @@
+/*
+ * ShowListsActivity. In this activity users are able to view the
+ * content of either their Already Read list or their Want To Read
+ * list. They can delete books from these lists on a long click and
+ * view extra information about the book when they click on the book.
+ * If the book is in the Already Read list, the user can give a rating
+ * to the book. If the book is in the Want To Read list, the user
+ * can move it to the Already Read list on a long click.
+ *
+ * Because this activity extends the ActionbarActivity the user can
+ * also click on the search icon to stay in the current activity,
+ * click on the heart icon to go to the MyBooksActivity to view the
+ * lists with books and click on the log out icon to log out and go
+ * back to the MainActivity.
+ */
+
 package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.method.ScrollingMovementMethod;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,87 +36,49 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class ShowListsActivity extends ActionbarActivity {
-    private DatabaseReference mDatabase;
-//    private FirebaseAuth.AuthStateListener mAuthListener;
+    private ShowListsActivity showListsAct;
     private FirebaseAuth mAuth;
-    String list;
-    TextView showList;
-    ShowListsActivity showListsAct;
-    ListView lvItems;
-    ArrayAdapter arrayAdapter;
+    private DatabaseReference mDatabase;
+    private String list;
+    private TextView showList;
+    private ListView lvItems;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_lists);
-
         showListsAct = this;
 
         mAuth = FirebaseAuth.getInstance();
 
-//        firebaseListener();
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         list = getIntent().getStringExtra("list");
-        showList = (TextView) findViewById(R.id.myBookListText);
 
+        showList = (TextView) findViewById(R.id.myBookListText);
         lvItems = (ListView) findViewById(R.id.myBooksView);
 
         showBooksList();
 
-//        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
-//        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
         lvItems.setOnItemLongClickListener(new deleteBook());
         lvItems.setOnItemClickListener(new showBook());
     }
 
-//    public void firebaseListener() {
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.d("Signed out", "onAuthStateChanged:signed_out");
-//                }
-//            }
-//        };
-//    }
-//
-//    /* Lifecycle methods. */
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-//    }
-//
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (mAuthListener != null) {
-//            mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//    }
 
+    /* Get all books saved in the database for this list from the database and add them to the
+     * arraylist and show this list as a listview. */
     public void getFromDatabase() {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get object out of database
                 FirebaseUser user = mAuth.getCurrentUser();
-                Log.d("hello", "hello");
                 ArrayList<String> booksList = new ArrayList<>();
                 assert user != null;
+                // Get Book object out of database
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
                 for (DataSnapshot myBook: myBooks.getChildren()) {
                     Book book = myBook.getValue(Book.class);
@@ -132,6 +100,7 @@ public class ShowListsActivity extends ActionbarActivity {
     }
 
 
+    /* Show the title of the list and the list with books beneath that. */
     public void showBooksList() {
         Resources res = getResources();
         if (list.equals("read")) {
@@ -143,159 +112,29 @@ public class ShowListsActivity extends ActionbarActivity {
     }
 
 
+    /* Adapter for showing the books in a listview. */
     public void bookListAdapter(ArrayList<String> booksList) {
-        Log.d("hoi", "adapter");
-        arrayAdapter = new ArrayAdapter<>
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, booksList);
         assert lvItems != null;
         lvItems.setAdapter(arrayAdapter);
-//        lvItems.setOnItemClickListener(new SecondActivity.goToBookInfo());
-
     }
 
 
-//    private class logOut implements View.OnClickListener {
-//        @Override public void onClick(View view) {
-//            FirebaseAuth.getInstance().signOut();
-//            startActivity(new Intent(showListsAct, MainActivity.class));
-//        }
-//    }
-//
-//
-//    private class goToMyBooks implements View.OnClickListener {
-//        @Override
-//        public void onClick(View view) {
-//            startActivity(new Intent(showListsAct, MyBooksActivity.class));
-//        }
-//    }
-
-
-    private class showBook implements AdapterView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view,
-                                int position, long id) {
-            String book = ((TextView) view).getText().toString();
-
-            book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
-            String bookID = book.replaceAll("\\.", "");
-            accessDatabase(bookID, "view");
-//            FirebaseUser user = mAuth.getCurrentUser();
-//            assert user != null;
-//            getBookInfo(bookID);
-//            Book myBook = getBookInfo(bookID);
-//            Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("book", myBook);
-//            intent.putExtras(bundle);
-//            intent.putExtra("list", list);
-//            startActivity(intent);
-//            finish();
-        }
-    }
-
-
-//    public void getBookInfo(final String book) {
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Get object out of database
-//                FirebaseUser user = mAuth.getCurrentUser();
-//                assert user != null;
-//                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
-//                Book myBook = myBooks.child(book).getValue(Book.class);
-//                Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
-////                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("book", myBook);
-//                intent.putExtras(bundle);
-//                intent.putExtra("list", list);
-//                startActivity(intent);
-////                finish();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d("read_failed", "The read failed: " + databaseError.getCode());
-//            }
-//        };
-//        mDatabase.addListenerForSingleValueEvent(postListener);
-//    }
-
-
-    private class deleteBook implements AdapterView.OnItemLongClickListener {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                       int position, long id) {
-            String book = ((TextView) view).getText().toString();
-            book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").insert(0, "Title: ").toString();
-            String bookID = book.replaceAll("\\.", "");
-
-//            showPopUp(bookID);
-            showPopUp(bookID, "delete");
-            getFromDatabase();
-            return true;
-        }
-    }
-
-
-    private void showPopUp(final String book, final String delete) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(showListsAct);
-        builder.setCancelable(true);
-        builder.setPositiveButton("Delete this book", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                accessDatabase(book, delete);
-//                deleteFromDatabase(book);
-//                Intent readIntent = new Intent(showListsAct, ShowListsActivity.class);
-//                readIntent.putExtra("list", list);
-//                startActivity(readIntent);
-//                arrayAdapter.notifyDataSetChanged();
-//                getFromDatabase();
-            }
-        });
-        if (list.equals("toread")) {
-            builder.setNegativeButton("Move to Already Read list", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    accessDatabase(book, "move");
-                }
-            });
-        }
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-
-//    public void deleteFromDatabase(final String book) {
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Get object out of database
-//                FirebaseUser user = mAuth.getCurrentUser();
-//                assert user != null;
-//                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
-//                myBooks.child(book).getRef().removeValue();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d("read_failed", "The read failed: " + databaseError.getCode());
-//            }
-//        };
-//        mDatabase.addListenerForSingleValueEvent(postListener);
-//    }
-
-
+    /* Access the database to either retrieve more information about the book, remove the book
+     * from the database or move the book from the Want To Read list to the Already Read list. */
     public void accessDatabase(final String bookID, final String action) {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get object out of database
                 FirebaseUser user = mAuth.getCurrentUser();
                 assert user != null;
+                // Get Book object out of database
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(list);
                 Book myBook = myBooks.child(bookID).getValue(Book.class);
+
                 switch (action) {
+                    // Retrieve the Book object to retrieve more information
                     case("view"):
                         Intent intent = new Intent(showListsAct, ShowMyBookActivity.class);
                         Bundle bundle = new Bundle();
@@ -304,12 +143,15 @@ public class ShowListsActivity extends ActionbarActivity {
                         intent.putExtra("list", list);
                         startActivity(intent);
                         break;
+                    // Delete Book object from database.
                     case("delete"):
                         myBooks.child(bookID).getRef().removeValue();
                         break;
+                    // Move Book object to Already Read list.
                     case("move"):
                         myBooks.child(bookID).getRef().removeValue();
-                        mDatabase.child("books").child(user.getUid()).child("read").child(bookID).setValue(myBook);
+                        mDatabase.child("books").child(user.getUid()).child("read").child(bookID)
+                                .setValue(myBook);
                         break;
                 }
             }
@@ -321,4 +163,65 @@ public class ShowListsActivity extends ActionbarActivity {
         };
         mDatabase.addListenerForSingleValueEvent(postListener);
     }
+
+
+    /* When a book in the listview is clicked access the book object in the database and go to the
+     * ShowMyBookActivity where more information about the book will be displayed. */
+    private class showBook implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view,
+                                int position, long id) {
+            String book = ((TextView) view).getText().toString();
+
+            book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ").
+                    insert(0, "Title: ").toString();
+            String bookID = book.replaceAll("\\.", "");
+            accessDatabase(bookID, "view");
+        }
+    }
+
+
+    /* Delete book from database (or move to Already Read list) when it is long clicked. */
+    private class deleteBook implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                       int position, long id) {
+            String book = ((TextView) view).getText().toString();
+            book = new StringBuilder(book).insert(book.indexOf("-") + 2, "Author: ")
+                    .insert(0, "Title: ").toString();
+            String bookID = book.replaceAll("\\.", "");
+
+            showPopUp(bookID, "delete");
+            getFromDatabase();
+            return true;
+        }
+    }
+
+
+    /* Show alertdialog which asks the user if he wants to delete the book. If the user is viewing
+     * the Want To Read list he also has the option to move the book to the Already Read list. */
+    private void showPopUp(final String book, final String delete) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(showListsAct);
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("Delete this book", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                accessDatabase(book, delete);
+            }
+        });
+
+        if (list.equals("toread")) {
+            builder.setNegativeButton("Move to Already Read list", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    accessDatabase(book, "move");
+                }
+            });
+        }
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

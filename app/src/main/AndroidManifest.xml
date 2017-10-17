@@ -32,7 +32,7 @@
         <activity android:name=".MyBooksActivity" />
         <activity android:name=".ShowListsActivity" />
         <activity android:name=".ActionbarActivity" />
-        <activity android:name=".ShowMyBookActivity"></activity>
+        <activity android:name=".ShowMyBookActivity" />
     </application>
 
 </manifest>

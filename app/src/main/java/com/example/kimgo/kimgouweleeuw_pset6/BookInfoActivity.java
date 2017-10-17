@@ -1,22 +1,26 @@
+/*
+ * BookInfoActivity. In this activity users are able to view extra
+ * information about the book they have selected in the SecondActivity.
+ * Users can add the book to either the Already Read list or the Want
+ * To Read list.
+ *
+ * Because this activity extends the ActionbarActivity the user can
+ * also click on the search icon to stay in the current activity,
+ * click on the heart icon to go to the MyBooksActivity to view the
+ * lists with books and click on the log out icon to log out and go
+ * back to the MainActivity.
+ */
+
 package com.example.kimgo.kimgouweleeuw_pset6;
 
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,19 +35,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class BookInfoActivity extends ActionbarActivity {
-    BookInfoActivity bookAct;
-    private DatabaseReference mDatabase;
-//    private FirebaseAuth.AuthStateListener mAuthListener;
+    private BookInfoActivity bookAct;
     private FirebaseAuth mAuth;
-    ArrayList<String> allBookInfo;
+    private DatabaseReference mDatabase;
+    private ArrayList<String> allBookInfo;
+    private SpannableStringBuilder builder = new SpannableStringBuilder();
+    private Book book;
+    private String bookID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_info);
-
         bookAct = this;
 
+        // Get the extra information about the book clicked in the SecondActivity
         String bookID = getIntent().getStringExtra("book");
         BookAsyncTask asyncTask = new BookAsyncTask(bookAct);
         asyncTask.execute(bookID);
@@ -54,153 +61,92 @@ public class BookInfoActivity extends ActionbarActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-//        findViewById(R.id.logOutButton).setOnClickListener(new logOut());
-//        findViewById(R.id.myBooksButton).setOnClickListener(new goToMyBooks());
         findViewById(R.id.addReadButton).setOnClickListener(new addToAlreadyRead());
         findViewById(R.id.addToReadButton).setOnClickListener(new addToWantToRead());
     }
 
-//    public void firebaseListener() {
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.d("Signed out", "onAuthStateChanged:signed_out");
-//                }
-//            }
-//        };
-//    }
-//
-//    /* Lifecycle methods. */
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-//    }
-//
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (mAuthListener != null) {
-//            mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//    }
 
+    /* Show all information about the book the user has clicked in the SecondActivity by appending
+     * all information into a single string. */
     public void bookInfoShow(ArrayList<String> bookInfoArray) {
         allBookInfo = bookInfoArray;
         TextView info = (TextView)findViewById(R.id.showBookInfo);
-//        TextView description = (TextView)findViewById(R.id.showBookDescription);
+        // Make textview scrollable to be able to view all information if it is too much to fit
+        // on the screen.
         info.setMovementMethod(new ScrollingMovementMethod());
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+        // Make "Title: ", "Author: ", "Publisher: " (and "Publication data: " if size of
+        // bookinfoArray is 5) bold.
         for (int i = 0; i < bookInfoArray.size() - 1; ++i) {
-            String bookInfo = bookInfoArray.get(i);
-            SpannableStringBuilder information = new SpannableStringBuilder(bookInfo);
-            information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bookInfo.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            builder.append(information).append("\n");
+            addToString(bookInfoArray.get(i));
         }
+
+        // Make "Publication date: " bold if size of bookInfoArray is less than 5 and show all info.
+        // Else also make "Book description: " bold and correctly show all info (including html
+        // tags in the description).
         if (bookInfoArray.size() < 5) {
-            String bookInfo = bookInfoArray.get(3);
-            SpannableStringBuilder information = new SpannableStringBuilder(bookInfo);
-            information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bookInfo.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            builder.append(information).append("\n");
+            addToString(bookInfoArray.get(3));
             info.setText(builder);
         } else {
             SpannableStringBuilder information = new SpannableStringBuilder("Book description: ");
-            information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            info.setText(builder.append(information).append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
+            information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            info.setText(builder.append(information).append(Html.fromHtml(
+                    bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
         }
-
-//        description.setText(information.append(Html.fromHtml(bookInfoArray.get(bookInfoArray.size() - 1), Html.FROM_HTML_MODE_LEGACY)));
     }
 
-//    private class logOut implements View.OnClickListener {
-//        @Override public void onClick(View view) {
-//            FirebaseAuth.getInstance().signOut();
-//            startActivity(new Intent(bookAct, MainActivity.class));
-//        }
-//    }
-//
-//    private class goToMyBooks implements View.OnClickListener {
-//        @Override
-//        public void onClick(View view) {
-//            startActivity(new Intent(bookAct, MyBooksActivity.class));
-//            finish();
-//        }
-//    }
 
-//    public void firebaseListener(final String listType) {
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
-//                    addToDatabase(listType, user);
-//                } else {
-//                    // User is signed out
-//                    Log.d("Signed out", "onAuthStateChanged:signed_out");
-//                }
-//            }
-//        };
-//    }
+    /* Make everything until ":" bold and add to the string. */
+    public void addToString(String bookInfo) {
+        SpannableStringBuilder information = new SpannableStringBuilder(bookInfo);
+        information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
+                bookInfo.indexOf(":") + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        builder.append(information).append("\n");
+    }
 
 
+    /* Add book to Already Read list in the database when Already Read button is clicked. */
     private class addToAlreadyRead implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             addToDatabase("read");
-//            startActivity(new Intent(bookAct, SecondActivity.class));
-//            finish();
         }
     }
 
+
+    /* Add book to Want To Read list in the database when Want To Read button is clicked. */
     private class addToWantToRead implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             addToDatabase("toread");
-//            startActivity(new Intent(bookAct, SecondActivity.class));
-//            finish();
         }
     }
 
 
-
+    /* Add the book object to the database if it doesn't already exist in either the Already Read
+     * list or the Want To Read list. A message will be displayed to the user about the succes or
+     * failure of the task. */
     public void addToDatabase(final String listType) {
-        final Book book;
-        // Ad an object to the database
-        if (allBookInfo.size() < 5) {
-            book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3));
-        } else {
-            book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2), allBookInfo.get(3), allBookInfo.get(4));
-        }
-        String ID = allBookInfo.get(0) + " - " + allBookInfo.get(1);
-        final String bookID = ID.replaceAll("\\.", "");
-        Log.d("id", bookID);
+        getBookAndBookID();
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get object out of database
                 FirebaseUser user = mAuth.getCurrentUser();
                 assert user != null;
-                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid()).child(listType);
-                if (myBooks.child(bookID).exists()) {
-                    if (listType.equals("read")) {
-                        Toast.makeText(bookAct, "Book has already been added to the Already Read list",
+                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid());
+
+                // Check if book already exists somewhere in the database
+                if (myBooks.child("read").child(bookID).exists()) {
+                    Toast.makeText(bookAct, "Book has already been added to the Already Read list",
                                 Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(bookAct, "Book has already been added to the Want To Read list",
+                } else if (myBooks.child("toread").child(bookID).exists()) {
+                    Toast.makeText(bookAct, "Book has already been added to the Want To Read list",
                                 Toast.LENGTH_SHORT).show();
-                    }
                 } else {
-                    mDatabase.child("books").child(user.getUid()).child(listType).child(bookID).setValue(book);
+                    mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
+                            .setValue(book);
                     if (listType.equals("read")) {
                         Toast.makeText(bookAct, "Book added successfully to Already Read list",
                                 Toast.LENGTH_SHORT).show();
@@ -220,6 +166,18 @@ public class BookInfoActivity extends ActionbarActivity {
     }
 
 
-
+    /* Uses all the book information to create a Book object and title and author to create
+     * the bookID for the database. */
+    public void getBookAndBookID() {
+        if (allBookInfo.size() < 5) {
+            book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2),
+                    allBookInfo.get(3));
+        } else {
+            book = new Book(allBookInfo.get(0), allBookInfo.get(1), allBookInfo.get(2),
+                    allBookInfo.get(3), allBookInfo.get(4));
+        }
+        String id = allBookInfo.get(0) + " - " + allBookInfo.get(1);
+        bookID = id.replaceAll("\\.", "");
+    }
 
 }
