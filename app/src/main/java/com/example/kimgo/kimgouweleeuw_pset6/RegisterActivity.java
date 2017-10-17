@@ -3,6 +3,9 @@
  * register for the GreatReads app. They will be automatically
  * logged in after registering. Firebase is again used to achieve
  * this authentication.
+ *
+ * It also extends the FirebaseActivity to be able to use the
+ * Firebse listeners.
  */
 
 package com.example.kimgo.kimgouweleeuw_pset6;
@@ -22,13 +25,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends FirebaseActivity {
     private RegisterActivity registerAct;
     private EditText emailText;
     private EditText passwordText;
     private EditText passwordConfirm;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private String email;
     private String password;
 
@@ -49,44 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        firebaseListener();
-
         findViewById(R.id.registerButton).setOnClickListener(new registerUser());
-    }
-
-
-    /* Checks if the user is logged in. */
-    public void firebaseListener() {
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is logged in
-                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is logged out
-                    Log.d("Signed out", "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-    }
-
-
-    /* Lifecycle methods. */
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
 

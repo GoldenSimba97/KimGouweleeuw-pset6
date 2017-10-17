@@ -6,6 +6,9 @@
  * Activity where he will be able to view the lists with books.
  * And when the user clicks on the log out icon he will log out
  * and go back to the MainActivity.
+ *
+ * It also extends the FirebaseActivity to be able to use the
+ * Firebse listeners.
  */
 
 package com.example.kimgo.kimgouweleeuw_pset6;
@@ -21,10 +24,9 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ActionbarActivity extends AppCompatActivity {
+public class ActionbarActivity extends FirebaseActivity {
     private ActionbarActivity actionbarAct;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
 
     @Override
@@ -34,8 +36,6 @@ public class ActionbarActivity extends AppCompatActivity {
         actionbarAct = this;
 
         mAuth = FirebaseAuth.getInstance();
-
-        firebaseListener();
     }
 
 
@@ -66,41 +66,6 @@ public class ActionbarActivity extends AppCompatActivity {
                 return(true);
         }
         return(super.onOptionsItemSelected(item));
-    }
-
-
-    /* Checks if the user is logged in. */
-    public void firebaseListener() {
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is logged in
-                    Log.d("Signed in", "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is logged out
-                    Log.d("Signed out", "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-    }
-
-
-    /* Lifecycle methods. */
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
 }
