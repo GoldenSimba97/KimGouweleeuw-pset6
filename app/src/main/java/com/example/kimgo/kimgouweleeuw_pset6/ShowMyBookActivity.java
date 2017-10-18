@@ -2,7 +2,8 @@
  * ShowMyBookActivity. In this activity users can view extra
  * information about the book they have clicked on in the ShowLists-
  * Activity. If the book is in the Already Read list, the user also
- * has the option to give a rating to the book.
+ * has the option to give a rating to the book. The user can also
+ * delete the book from their list from here.
  *
  * Because this activity extends the ActionbarActivity the user can
  * also click on the search icon to stay in the current activity,
@@ -21,6 +22,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -58,6 +60,9 @@ public class ShowMyBookActivity extends ActionbarActivity {
         showBookInfo();
 
         setRating();
+
+        findViewById(R.id.deleteButton).setOnClickListener(new deleteBook());
+        findViewById(R.id.deleteButton2).setOnClickListener(new deleteBook());
     }
 
 
@@ -68,16 +73,7 @@ public class ShowMyBookActivity extends ActionbarActivity {
         // Make textview scrollable.
         info.setMovementMethod(new ScrollingMovementMethod());
 
-        // Show rating of book when in Already Read list.
-        if (listType.equals("read")) {
-            ratingBar.setVisibility(View.VISIBLE);
-            TextView rateIt = (TextView) findViewById(R.id.textRateIt);
-            rateIt.setVisibility(View.VISIBLE);
-            float rating = book.getRating();
-            if (rating > 0) {
-                ratingBar.setRating(rating);
-            }
-        }
+        showRating();
 
         // Add all information to a string.
         addToString(book.getTitle());
@@ -98,6 +94,27 @@ public class ShowMyBookActivity extends ActionbarActivity {
     }
 
 
+    /* Show the rating of the book when the user is in the Already Read list. */
+    public void showRating() {
+        if (listType.equals("read")) {
+            ratingBar.setVisibility(View.VISIBLE);
+            TextView rateIt = (TextView) findViewById(R.id.textRateIt);
+            rateIt.setVisibility(View.VISIBLE);
+
+            Button deleteIt = (Button) findViewById(R.id.deleteButton);
+            deleteIt.setVisibility(View.VISIBLE);
+
+            Button deleteIt2 = (Button) findViewById(R.id.deleteButton2);
+            deleteIt2.setVisibility(View.INVISIBLE);
+
+            float rating = book.getRating();
+            if (rating > 0) {
+                ratingBar.setRating(rating);
+            }
+        }
+    }
+
+
     /* Make everything until ":" bold and add to the string. */
     public void addToString(String string) {
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(string);
@@ -107,8 +124,7 @@ public class ShowMyBookActivity extends ActionbarActivity {
     }
 
 
-    /* When the user has rated the book by clicking the number of stars it will be saved in the
-     * database. */
+    /* Saves the rating the user has given to a book by clicking the number of stars. */
     public void setRating() {
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 
@@ -117,14 +133,15 @@ public class ShowMyBookActivity extends ActionbarActivity {
                                         boolean fromUser) {
                 rating = ratingBar.getRating();
                 book.setRating(rating);
-                addToDatabase();
+                accessDatabase("rate");
             }
         });
     }
 
 
-    /* Add the Book object with the changed rating to the database to update the rating. */
-    public void addToDatabase() {
+    /* Adds the Book object with the changed rating to the database to update the rating if action
+     * is equal to "rate" and delete the Book object if the action is equal to "delete". */
+    public void accessDatabase(final String action) {
         String ID = book.getTitle() + " - " + book.getAuthor();
         final String bookID = ID.replaceAll("\\.", "");
 
@@ -133,9 +150,17 @@ public class ShowMyBookActivity extends ActionbarActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = mAuth.getCurrentUser();
                 assert user != null;
-                // Add Book object to the database.
-                mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
-                        .setValue(book);
+                // Add Book object to the database if action is "rate" and delete it when action is
+                // "delete".
+                if (action.equals("rate")) {
+                    mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
+                            .setValue(book);
+                } else {
+                    DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid())
+                            .child(listType);
+                    myBooks.child(bookID).getRef().removeValue();
+                }
+
             }
 
             @Override
@@ -144,6 +169,16 @@ public class ShowMyBookActivity extends ActionbarActivity {
             }
         };
         mDatabase.addListenerForSingleValueEvent(postListener);
+    }
+
+
+    /* Deletes the book from database when the delete button is clicked and sends user back to
+     * the previous activity. */
+    private class deleteBook implements View.OnClickListener {
+        @Override public void onClick(View view) {
+            accessDatabase("delete");
+            finish();
+        }
     }
 
 }

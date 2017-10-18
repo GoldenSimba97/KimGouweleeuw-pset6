@@ -36,18 +36,45 @@
             android:stepSize="1.0"
             android:visibility="gone" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".2"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:text="@string/delete"
+            android:visibility="gone" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/showBookInfo"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:maxLines = "30"
-        android:scrollbars = "vertical"
-        android:paddingStart="5dp"
-        android:paddingEnd="0dp"
-        android:layout_gravity="fill"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/showBookInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines = "30"
+            android:scrollbars = "vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="0dp"
+            android:layout_gravity="fill"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <Button
+            android:id="@+id/deleteButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:text="@string/delete" />
+
+    </FrameLayout>
 
 </LinearLayout>
