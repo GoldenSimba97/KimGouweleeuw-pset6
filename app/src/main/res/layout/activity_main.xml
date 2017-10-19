@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textEmailAddress"
+        android:hint="@string/email"
         android:text="" />
 
     <EditText
@@ -38,6 +39,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword"
+        android:hint="@string/password"
         android:text="" />
 
     <Button

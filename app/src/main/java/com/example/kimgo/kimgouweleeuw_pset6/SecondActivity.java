@@ -17,7 +17,6 @@ package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -34,12 +33,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SecondActivity extends ActionbarActivity {
     private SecondActivity secondAct;
-    private EditText searchBooks;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "Firebase_test";
@@ -53,14 +49,11 @@ public class SecondActivity extends ActionbarActivity {
         setContentView(R.layout.activity_second);
         secondAct = this;
 
-        searchBooks = (EditText) findViewById(R.id.searchBooks);
-        searchBooks.setHint("Search for books");
-
         mAuth = FirebaseAuth.getInstance();
 
         setListener();
 
-        findViewById(R.id.searchButton).setOnClickListener(new bookSearch());
+        findViewById(R.id.searchButton).setOnClickListener(new BookSearch());
     }
 
 
@@ -82,7 +75,6 @@ public class SecondActivity extends ActionbarActivity {
                 } else {
                     // User is logged out
                     Log.d(TAG, "onAuthStateChanged:signed_out:");
-                    Log.d("logout", "logged out");
                     goToRegisterLoginActivity();
                 }
             }
@@ -90,7 +82,6 @@ public class SecondActivity extends ActionbarActivity {
     }
 
 
-    /* Sends the user back to the starting activity to log in or register. */
     private void goToRegisterLoginActivity() {
         startActivity(new Intent(secondAct, MainActivity.class));
         finish();
@@ -136,9 +127,11 @@ public class SecondActivity extends ActionbarActivity {
     /* Searches for the books of the specific search query the user has typed in when the
      * search button is clicked. This only happens when the user has actually typed something
      * in the search bar. */
-    private class bookSearch implements View.OnClickListener {
+    private class BookSearch implements View.OnClickListener {
         @Override public void onClick(View view) {
+            EditText searchBooks = (EditText) findViewById(R.id.searchBooks);
             String bookSearch = searchBooks.getText().toString();
+
             // Checks whether the user has typed in a search query before clicking the search button
             if (!bookSearch.isEmpty()) {
                 BookAsyncTask asyncTask = new BookAsyncTask(secondAct);
@@ -157,17 +150,17 @@ public class SecondActivity extends ActionbarActivity {
     }
 
 
-    /* Displays all books that have been found matching the search query in a listview. If no
-     * search results have been found, this message will be displayed for the user. */
+    /* Displays all books that have been found matching the search query in a ListView. If no
+     * search results have been found, a message will be displayed for the user. */
     public void bookShow(ArrayList<String> booksArray, ArrayList<String> idArray) {
         bookResults = booksArray;
         // Save the id's of the books to be able to ask for more information
         idList = idArray;
-
         bookAdapter();
     }
 
 
+    /* Puts all search results in the ListView and displays a message. */
     public void bookAdapter() {
         TextView results = (TextView) findViewById(R.id.searchResults);
         // Checks if any search results have been found
@@ -182,13 +175,13 @@ public class SecondActivity extends ActionbarActivity {
         ListView lvItems = (ListView) findViewById(R.id.listViewID);
         assert lvItems != null;
         lvItems.setAdapter(arrayAdapter);
-        lvItems.setOnItemClickListener(new goToBookInfo());
+        lvItems.setOnItemClickListener(new GoToBookInfo());
     }
 
 
-    /* When a book in the listview is clicked go to the BookInfoActivity where more information
+    /* When a book in the ListView is clicked go to the BookInfoActivity where more information
      * about the book will be displayed. */
-    private class goToBookInfo implements AdapterView.OnItemClickListener {
+    private class GoToBookInfo implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view,
                                 int position, long id) {

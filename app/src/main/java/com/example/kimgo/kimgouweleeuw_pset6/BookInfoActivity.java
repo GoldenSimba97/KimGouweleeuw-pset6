@@ -50,7 +50,7 @@ public class BookInfoActivity extends ActionbarActivity {
         setContentView(R.layout.activity_book_info);
         bookAct = this;
 
-        // Get the extra information about the book clicked in the SecondActivity
+        // Gets the extra information about the book clicked in the SecondActivity
         String bookID = getIntent().getStringExtra("book");
         BookAsyncTask asyncTask = new BookAsyncTask(bookAct);
         asyncTask.execute(bookID);
@@ -61,34 +61,35 @@ public class BookInfoActivity extends ActionbarActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        findViewById(R.id.addReadButton).setOnClickListener(new addToAlreadyRead());
-        findViewById(R.id.addToReadButton).setOnClickListener(new addToWantToRead());
+        findViewById(R.id.addReadButton).setOnClickListener(new AddToAlreadyRead());
+        findViewById(R.id.addToReadButton).setOnClickListener(new AddToWantToRead());
     }
 
 
-    /* Show all information about the book the user has clicked in the SecondActivity by appending
+    /* Shows all information about the book the user has clicked in the SecondActivity by appending
      * all information into a single string. */
     public void bookInfoShow(ArrayList<String> bookInfoArray) {
         allBookInfo = bookInfoArray;
         TextView info = (TextView)findViewById(R.id.showBookInfo);
-        // Make textview scrollable to be able to view all information if it is too much to fit
+        // Makes TextView scrollable to be able to view all information if it is too much to fit
         // on the screen.
         info.setMovementMethod(new ScrollingMovementMethod());
 
-        // Make "Title: ", "Author: ", "Publisher: " (and "Publication data: " if size of
+        // Makes "Title: ", "Author: ", "Publisher: " (and "Publication data: " if size of
         // bookinfoArray is 5) bold.
         for (int i = 0; i < bookInfoArray.size() - 1; ++i) {
             addToString(bookInfoArray.get(i));
         }
 
-        // Make "Publication date: " bold if size of bookInfoArray is less than 5 and show all info.
-        // Else also make "Book description: " bold and correctly show all info (including html
-        // tags in the description).
+        // Makes "Publication date: " bold if size of bookInfoArray is less than 5 and shows all
+        // info. Else also makes "Book description: " bold and correctly shows all info (including
+        // html tags in the description).
         if (bookInfoArray.size() < 5) {
             addToString(bookInfoArray.get(3));
             info.setText(builder);
         } else {
-            SpannableStringBuilder information = new SpannableStringBuilder("Book description: ");
+            SpannableStringBuilder information = new SpannableStringBuilder(getString(
+                    R.string.description));
             information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16,
                     Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             info.setText(builder.append(information).append(Html.fromHtml(
@@ -97,7 +98,7 @@ public class BookInfoActivity extends ActionbarActivity {
     }
 
 
-    /* Make everything until ":" bold and add to the string. */
+    /* Makes everything until ":" bold and adds to the string. */
     public void addToString(String bookInfo) {
         SpannableStringBuilder information = new SpannableStringBuilder(bookInfo);
         information.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
@@ -106,8 +107,8 @@ public class BookInfoActivity extends ActionbarActivity {
     }
 
 
-    /* Add book to Already Read list in the database when Already Read button is clicked. */
-    private class addToAlreadyRead implements View.OnClickListener {
+    /* Adds book to Already Read list in the database when Already Read button is clicked. */
+    private class AddToAlreadyRead implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             addToDatabase("read");
@@ -115,8 +116,8 @@ public class BookInfoActivity extends ActionbarActivity {
     }
 
 
-    /* Add book to Want To Read list in the database when Want To Read button is clicked. */
-    private class addToWantToRead implements View.OnClickListener {
+    /* Adds book to Want To Read list in the database when Want To Read button is clicked. */
+    private class AddToWantToRead implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             addToDatabase("toread");
@@ -124,8 +125,8 @@ public class BookInfoActivity extends ActionbarActivity {
     }
 
 
-    /* Add the book object to the database if it doesn't already exist in either the Already Read
-     * list or the Want To Read list. A message will be displayed to the user about the succes or
+    /* Adds the book object to the database if it doesn't already exist in either the Already Read
+     * list or the Want To Read list. A message will be displayed to the user about the success or
      * failure of the task. */
     public void addToDatabase(final String listType) {
         getBookAndBookID();
@@ -137,21 +138,21 @@ public class BookInfoActivity extends ActionbarActivity {
                 assert user != null;
                 DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid());
 
-                // Check if book already exists somewhere in the database
+                // Checks if book already exists somewhere in the database
                 if (myBooks.child("read").child(bookID).exists()) {
-                    Toast.makeText(bookAct, "Book has already been added to the Already Read list",
+                    Toast.makeText(bookAct, getString(R.string.alreadyfail),
                                 Toast.LENGTH_SHORT).show();
                 } else if (myBooks.child("toread").child(bookID).exists()) {
-                    Toast.makeText(bookAct, "Book has already been added to the Want To Read list",
+                    Toast.makeText(bookAct, getString(R.string.wantfail),
                                 Toast.LENGTH_SHORT).show();
                 } else {
                     mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
                             .setValue(book);
                     if (listType.equals("read")) {
-                        Toast.makeText(bookAct, "Book added successfully to Already Read list",
+                        Toast.makeText(bookAct, getString(R.string.alreadysuccess),
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(bookAct, "Book added successfully to Want To Read list",
+                        Toast.makeText(bookAct, getString(R.string.wantsuccess),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }

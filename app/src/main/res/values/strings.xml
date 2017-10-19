@@ -2,14 +2,14 @@
     <string name="app_name">GreatReads</string>
     <string name="login">Log in</string>
     <string name="register">Register</string>
-    <string name="noAccount">Don\'t have an account yet? Please register to continue!</string>
+    <string name="noaccount">Don\'t have an account yet? Register here to continue!</string>
     <string name="welcome">Welcome to GreatReads</string>
     <string name="subwelcome">Please log in to continue</string>
     <string name="search">Search</string>
     <string name="results">Search results</string>
     <string name="noresults">No search results found</string>
     <string name="hello">Hello %1$s</string>
-    <string name="description"><b>Book description</b> %1$s</string>
+    <string name="description">Book description: </string>
     <string name="mybooks">My books</string>
     <string name="read">Already Read</string>
     <string name="toread">Want To Read</string>
@@ -19,4 +19,19 @@
     <string name="rate">Rate it: </string>
     <string name="newuser">Please fill in the fields below to register</string>
     <string name="delete">Delete</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="authfail">Authentication Failed. Email and/or password are incorrect</string>
+    <string name="loggedin">Logged in user: </string>
+    <string name="success">\u0020 successfully</string>
+    <string name="confpassword">Confirm password</string>
+    <string name="create">Created user: </string>
+    <string name="fail">Authentication Failed</string>
+    <string name="nomatch">Passwords do not match</string>
+    <string name="criteria">Password needs to be at least 6 characters long</string>
+    <string name="searchbooks">Search for books</string>
+    <string name="alreadyfail">Book has already been added to the Already Read list</string>
+    <string name="wantfail">Book has already been added to the Want To Read list</string>
+    <string name="alreadysuccess">Book added successfully to Already Read list</string>
+    <string name="wantsuccess">Book added successfully to Want To Read list</string>
 </resources>

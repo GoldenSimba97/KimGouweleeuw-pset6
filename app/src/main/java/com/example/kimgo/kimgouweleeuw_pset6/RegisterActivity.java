@@ -12,7 +12,6 @@ package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends FirebaseActivity {
     private RegisterActivity registerAct;
@@ -45,13 +43,9 @@ public class RegisterActivity extends FirebaseActivity {
         passwordText = (EditText) findViewById(R.id.editPassword);
         passwordConfirm = (EditText) findViewById(R.id.editPassword2);
 
-        emailText.setHint("Email");
-        passwordText.setHint("Password");
-        passwordConfirm.setHint("Confirm password");
-
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.registerButton).setOnClickListener(new registerUser());
+        findViewById(R.id.registerButton).setOnClickListener(new RegisterUser());
     }
 
 
@@ -63,15 +57,15 @@ public class RegisterActivity extends FirebaseActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("Create user", "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If log in fails, display a message to the user. If log in succeeds
-                        // the auth state listener will be notified and the newly created user
-                        // will receive a message and be sent to the second activity.
+                        // If create user fails, display a message to the user. If create user
+                        // succeeds the auth state listener will be notified and the newly created
+                        // user will receive a message and be sent to the SecondActivity.
                         if (!task.isSuccessful()) {
-                            Toast.makeText(registerAct, "Authentication Failed",
+                            Toast.makeText(registerAct, getString(R.string.fail),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(registerAct, "Created user: " + email +
-                                    "successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(registerAct, getString(R.string.create) + email +
+                                    getString(R.string.success), Toast.LENGTH_SHORT).show();
                             goToSecondActivity();
                         }
                     }
@@ -82,30 +76,29 @@ public class RegisterActivity extends FirebaseActivity {
     /* Registers new user when register button is clicked. This will only happen when all fields
      * have been correctly filled in. When this is not the case a message will be displayed to
      * the user. */
-    private class registerUser implements View.OnClickListener {
+    private class RegisterUser implements View.OnClickListener {
         @Override public void onClick(View view) {
             email = emailText.getText().toString();
             password = passwordText.getText().toString();
             String confirmPassword = passwordConfirm.getText().toString();
 
             if (!email.isEmpty() & !password.isEmpty() & !confirmPassword.isEmpty()) {
-                // Check if password is at least 6 characters long and password and confirm
+                // Checks if password is at least 6 characters long and password and confirm
                 // password are the same.
                 if (password.length() >= 6 & password.equals(confirmPassword)) {
                     createUser();
                 } else if (!password.equals(confirmPassword)) {
-                    Toast.makeText(registerAct, "Passwords do not match",
+                    Toast.makeText(registerAct, getString(R.string.nomatch),
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(registerAct, "Password needs to be at least 6 " +
-                            "characters long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(registerAct, getString(R.string.criteria),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
 
-    /* Goes to SecondActivity. */
     private void goToSecondActivity() {
         startActivity(new Intent(registerAct, SecondActivity.class));
         finish();
