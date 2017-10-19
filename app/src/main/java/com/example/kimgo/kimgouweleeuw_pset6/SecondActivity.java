@@ -17,6 +17,7 @@ package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SecondActivity extends ActionbarActivity {
     private SecondActivity secondAct;
@@ -41,6 +44,7 @@ public class SecondActivity extends ActionbarActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "Firebase_test";
     private ArrayList<String> idList;
+    private ArrayList<String> bookResults;
 
 
     @Override
@@ -110,6 +114,25 @@ public class SecondActivity extends ActionbarActivity {
     }
 
 
+    /* Creates bundle when onSaveInstanceState is called to save the search results. */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("bookResults", bookResults);
+        outState.putStringArrayList("bookID", idList);
+    }
+
+
+    /* Gets the saved search results to show them when the instance state is restored. */
+    @Override
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        bookResults = inState.getStringArrayList("bookResults");
+        idList = inState.getStringArrayList("bookID");
+        bookAdapter();
+    }
+
+
     /* Searches for the books of the specific search query the user has typed in when the
      * search button is clicked. This only happens when the user has actually typed something
      * in the search bar. */
@@ -137,19 +160,25 @@ public class SecondActivity extends ActionbarActivity {
     /* Displays all books that have been found matching the search query in a listview. If no
      * search results have been found, this message will be displayed for the user. */
     public void bookShow(ArrayList<String> booksArray, ArrayList<String> idArray) {
+        bookResults = booksArray;
         // Save the id's of the books to be able to ask for more information
         idList = idArray;
-        TextView results = (TextView) findViewById(R.id.searchResults);
 
+        bookAdapter();
+    }
+
+
+    public void bookAdapter() {
+        TextView results = (TextView) findViewById(R.id.searchResults);
         // Checks if any search results have been found
-        if (!booksArray.isEmpty()) {
+        if (!bookResults.isEmpty()) {
             results.setText(R.string.results);
         } else {
             results.setText(R.string.noresults);
         }
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_list_item_1, booksArray);
+                (this, android.R.layout.simple_list_item_1, bookResults);
         ListView lvItems = (ListView) findViewById(R.id.listViewID);
         assert lvItems != null;
         lvItems.setAdapter(arrayAdapter);
