@@ -5,10 +5,10 @@
  * To Read list.
  *
  * Because this activity extends the ActionbarActivity the user can
- * also click on the search icon to stay in the current activity,
- * click on the heart icon to go to the MyBooksActivity to view the
- * lists with books and click on the log out icon to log out and go
- * back to the MainActivity.
+ * also click on the search icon to go to the SecondActivity to search
+ * for other books, click on the heart icon to go to the MyBooksActivity
+ * to view the lists with books and click on the log out icon to log out
+ * and go back to the MainActivity.
  */
 
 package com.example.kimgo.kimgouweleeuw_pset6;
@@ -70,7 +70,7 @@ public class BookInfoActivity extends ActionbarActivity {
      * all information into a single string. */
     public void bookInfoShow(ArrayList<String> bookInfoArray) {
         allBookInfo = bookInfoArray;
-        TextView info = (TextView)findViewById(R.id.showBookInfo);
+        TextView info = (TextView) findViewById(R.id.showBookInfo);
         // Makes TextView scrollable to be able to view all information if it is too much to fit
         // on the screen.
         info.setMovementMethod(new ScrollingMovementMethod());
@@ -135,25 +135,26 @@ public class BookInfoActivity extends ActionbarActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                assert user != null;
-                DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid());
+                if (user != null) {
+                    DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid());
 
-                // Checks if book already exists somewhere in the database
-                if (myBooks.child("read").child(bookID).exists()) {
-                    Toast.makeText(bookAct, getString(R.string.alreadyfail),
+                    // Checks if book already exists somewhere in the database
+                    if (myBooks.child("read").child(bookID).exists()) {
+                        Toast.makeText(bookAct, getString(R.string.alreadyfail),
                                 Toast.LENGTH_SHORT).show();
-                } else if (myBooks.child("toread").child(bookID).exists()) {
-                    Toast.makeText(bookAct, getString(R.string.wantfail),
-                                Toast.LENGTH_SHORT).show();
-                } else {
-                    mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
-                            .setValue(book);
-                    if (listType.equals("read")) {
-                        Toast.makeText(bookAct, getString(R.string.alreadysuccess),
+                    } else if (myBooks.child("toread").child(bookID).exists()) {
+                        Toast.makeText(bookAct, getString(R.string.wantfail),
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(bookAct, getString(R.string.wantsuccess),
-                                Toast.LENGTH_SHORT).show();
+                        mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
+                                .setValue(book);
+                        if (listType.equals("read")) {
+                            Toast.makeText(bookAct, getString(R.string.alreadysuccess),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(bookAct, getString(R.string.wantsuccess),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -161,6 +162,8 @@ public class BookInfoActivity extends ActionbarActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("read_failed", "The read failed: " + databaseError.getCode());
+                Toast.makeText(bookAct, getString(R.string.wrong),
+                        Toast.LENGTH_SHORT).show();
             }
         };
         mDatabase.addListenerForSingleValueEvent(postListener);

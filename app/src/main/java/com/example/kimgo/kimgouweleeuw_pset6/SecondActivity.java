@@ -165,15 +165,14 @@ public class SecondActivity extends ActionbarActivity {
         TextView results = (TextView) findViewById(R.id.searchResults);
         // Checks if any search results have been found
         if (!bookResults.isEmpty()) {
-            results.setText(R.string.results);
+            results.setText(getString(R.string.results));
         } else {
-            results.setText(R.string.noresults);
+            results.setText(getString(R.string.noresults));
         }
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, bookResults);
         ListView lvItems = (ListView) findViewById(R.id.listViewID);
-        assert lvItems != null;
         lvItems.setAdapter(arrayAdapter);
         lvItems.setOnItemClickListener(new GoToBookInfo());
     }

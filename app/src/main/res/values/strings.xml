@@ -9,7 +9,7 @@
     <string name="results">Search results</string>
     <string name="noresults">No search results found</string>
     <string name="hello">Hello %1$s</string>
-    <string name="description">Book description: </string>
+    <string name="description">Book description: \u0020</string>
     <string name="mybooks">My books</string>
     <string name="read">Already Read</string>
     <string name="toread">Want To Read</string>
@@ -22,10 +22,10 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="authfail">Authentication Failed. Email and/or password are incorrect</string>
-    <string name="loggedin">Logged in user: </string>
+    <string name="loggedin">Logged in user: \u0020</string>
     <string name="success">\u0020 successfully</string>
     <string name="confpassword">Confirm password</string>
-    <string name="create">Created user: </string>
+    <string name="create">Created user: \u0020</string>
     <string name="fail">Authentication Failed</string>
     <string name="nomatch">Passwords do not match</string>
     <string name="criteria">Password needs to be at least 6 characters long</string>
@@ -34,4 +34,7 @@
     <string name="wantfail">Book has already been added to the Want To Read list</string>
     <string name="alreadysuccess">Book added successfully to Already Read list</string>
     <string name="wantsuccess">Book added successfully to Want To Read list</string>
+    <string name="wrong">Something went wrong</string>
+    <string name="deletebook">Delete this book</string>
+    <string name="move">Move to Already Read list</string>
 </resources>

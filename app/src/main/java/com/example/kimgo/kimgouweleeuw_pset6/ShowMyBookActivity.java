@@ -6,10 +6,10 @@
  * delete the book from their list from here.
  *
  * Because this activity extends the ActionbarActivity the user can
- * also click on the search icon to stay in the current activity,
- * click on the heart icon to go to the MyBooksActivity to view the
- * lists with books and click on the log out icon to log out and go
- * back to the MainActivity.
+ * also click on the search icon to go to the SecondActivity to search
+ * for other books, click on the heart icon to go to the MyBooksActivity
+ * to view the lists with books and click on the log out icon to log out
+ * and go back to the MainActivity.
  */
 
 package com.example.kimgo.kimgouweleeuw_pset6;
@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class ShowMyBookActivity extends ActionbarActivity {
+    private ShowMyBookActivity showMyBookAct;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private Book book;
@@ -47,6 +49,7 @@ public class ShowMyBookActivity extends ActionbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_my_book);
+        showMyBookAct = this;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -61,31 +64,32 @@ public class ShowMyBookActivity extends ActionbarActivity {
 
         setRating();
 
-        findViewById(R.id.deleteButton).setOnClickListener(new deleteBook());
-        findViewById(R.id.deleteButton2).setOnClickListener(new deleteBook());
+        findViewById(R.id.deleteButton).setOnClickListener(new DeleteBook());
+        findViewById(R.id.deleteButton2).setOnClickListener(new DeleteBook());
     }
 
 
-    /* Show all information about the book. The user can also rate the book if it is in the
+    /* Shows all information about the book. The user can also rate the book if it is in the
      * Already Read list. */
     public void showBookInfo() {
         TextView info = (TextView) findViewById(R.id.showBookInfo);
-        // Make textview scrollable.
+        // Makes TextView scrollable.
         info.setMovementMethod(new ScrollingMovementMethod());
 
         showRating();
 
-        // Add all information to a string.
+        // Adds all information to a string.
         addToString(book.getTitle());
         addToString(book.getAuthor());
         addToString(book.getPublisher());
         addToString(book.getPublishedDate());
 
-        // Correctly show the book information, including the html tags.
+        // Shows the book information, including the html tags, correctly.
         if (book.getDescription().equals("")) {
             info.setText(builder);
         } else {
-            SpannableStringBuilder description = new SpannableStringBuilder("Book description: ");
+            SpannableStringBuilder description = new SpannableStringBuilder(getString(
+                    R.string.description));
             description.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, 16,
                     Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             info.setText(builder.append(description.append(Html.fromHtml(book.getDescription(),
@@ -94,7 +98,7 @@ public class ShowMyBookActivity extends ActionbarActivity {
     }
 
 
-    /* Show the rating of the book when the user is in the Already Read list. */
+    /* Shows the rating of the book when the user is in the Already Read list. */
     public void showRating() {
         if (listType.equals("read")) {
             ratingBar.setVisibility(View.VISIBLE);
@@ -115,7 +119,7 @@ public class ShowMyBookActivity extends ActionbarActivity {
     }
 
 
-    /* Make everything until ":" bold and add to the string. */
+    /* Makes everything until ":" bold and adds to the string. */
     public void addToString(String string) {
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(string);
         stringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
@@ -139,8 +143,8 @@ public class ShowMyBookActivity extends ActionbarActivity {
     }
 
 
-    /* Adds the Book object with the changed rating to the database to update the rating if action
-     * is equal to "rate" and delete the Book object if the action is equal to "delete". */
+    /* Adds the book object with the changed rating to the database to update the rating if action
+     * is equal to "rate" and delete the book object if the action is equal to "delete". */
     public void accessDatabase(final String action) {
         String ID = book.getTitle() + " - " + book.getAuthor();
         final String bookID = ID.replaceAll("\\.", "");
@@ -149,23 +153,24 @@ public class ShowMyBookActivity extends ActionbarActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                assert user != null;
-                // Add Book object to the database if action is "rate" and delete it when action is
-                // "delete".
-                if (action.equals("rate")) {
-                    mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
-                            .setValue(book);
-                } else {
-                    DataSnapshot myBooks = dataSnapshot.child("books").child(user.getUid())
-                            .child(listType);
-                    myBooks.child(bookID).getRef().removeValue();
+                if (user != null) {
+                    // Adds book object to the database if action is "rate" and delete it when
+                    // action is "delete".
+                    if (action.equals("rate")) {
+                        mDatabase.child("books").child(user.getUid()).child(listType).child(bookID)
+                                .setValue(book);
+                    } else {
+                        dataSnapshot.child("books").child(user.getUid()).child(listType)
+                                .child(bookID).getRef().removeValue();
+                    }
                 }
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("read_failed", "The read failed: " + databaseError.getCode());
+                Toast.makeText(showMyBookAct, getString(R.string.wrong),
+                        Toast.LENGTH_SHORT).show();
             }
         };
         mDatabase.addListenerForSingleValueEvent(postListener);
@@ -174,7 +179,7 @@ public class ShowMyBookActivity extends ActionbarActivity {
 
     /* Deletes the book from database when the delete button is clicked and sends user back to
      * the previous activity. */
-    private class deleteBook implements View.OnClickListener {
+    private class DeleteBook implements View.OnClickListener {
         @Override public void onClick(View view) {
             accessDatabase("delete");
             finish();

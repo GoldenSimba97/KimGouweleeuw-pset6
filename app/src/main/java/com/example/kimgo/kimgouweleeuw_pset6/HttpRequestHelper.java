@@ -40,7 +40,7 @@ class HttpRequestHelper {
 
         HttpURLConnection connect;
 
-        // Gets the json file from the url.
+        // Gets the Json file from the url.
         if (url != null) {
             try {
                 connect = (HttpURLConnection) url.openConnection();

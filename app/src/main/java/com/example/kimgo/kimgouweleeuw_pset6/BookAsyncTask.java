@@ -3,14 +3,13 @@
  * class will be called to get the Json file which contains
  * all the books that are found for the search query as a
  * string. The needed information about the book is retrieved
- * from this file and added to an arraylist.
+ * from this file and added to an ArrayList.
  */
 
 package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,7 +25,7 @@ class BookAsyncTask extends AsyncTask<String, Integer, String> {
     private Integer type;
 
 
-    /* Set the values of the variables. */
+    /* Sets the values of the variables. */
     BookAsyncTask(SecondActivity second) {
         this.secondAct = second;
         this.context = this.secondAct.getApplicationContext();
@@ -53,7 +52,7 @@ class BookAsyncTask extends AsyncTask<String, Integer, String> {
     }
 
 
-    /* Get all book information from the json page and add it to an arraylist. */
+    /* Gets all book information from the Json page and add it to an ArrayList. */
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
@@ -100,7 +99,7 @@ class BookAsyncTask extends AsyncTask<String, Integer, String> {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        // Send arraylist with book information to either the SecondActivity or the
+        // Sends ArrayList with book information to either the SecondActivity or the
         // BookInfoActivity.
         if (type == 1) {
             this.secondAct.bookShow(list, idList);

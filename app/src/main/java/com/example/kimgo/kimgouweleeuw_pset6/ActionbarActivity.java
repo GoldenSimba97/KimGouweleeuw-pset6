@@ -14,15 +14,11 @@
 package com.example.kimgo.kimgouweleeuw_pset6;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class ActionbarActivity extends FirebaseActivity {
     private ActionbarActivity actionbarAct;
@@ -41,7 +37,7 @@ public class ActionbarActivity extends FirebaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu. This adds items to the action bar if it is present.
+        // Inflates the menu. This adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
@@ -50,15 +46,16 @@ public class ActionbarActivity extends FirebaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            // Go to the SecondActivity when the search icon is clicked.
+            // Goes to the SecondActivity when the search icon is clicked.
             case R.id.action_search:
                 startActivity(new Intent(actionbarAct, SecondActivity.class));
                 return(true);
-            // Go to the MyBooksActivity when the heart icon is clicked.
+            // Goes to the MyBooksActivity when the heart icon is clicked.
             case R.id.action_mybooks:
                 startActivity(new Intent(actionbarAct, MyBooksActivity.class));
                 return(true);
-            // Go to the MainActivity when the log out icon is clicked.
+            // Goes to the MainActivity when the log out icon is clicked after
+            // logging out the user.
             case R.id.action_logout:
                 mAuth.signOut();
                 startActivity(new Intent(actionbarAct, MainActivity.class));
